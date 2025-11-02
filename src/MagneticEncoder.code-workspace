@@ -1,0 +1,21 @@
+{
+	"folders": [
+		{
+			"path": "../../../../Project/MagneticEncoder"
+		},
+		{
+			"name": "MagneticEncoder",
+			"path": ".."
+		}
+	],
+	"settings": {
+		"files.associations": {
+			"*.svghmi": "svg",
+			"algorithm": "cpp",
+			"chrono": "cpp",
+			"limits": "cpp",
+			"random": "cpp",
+			"utility": "cpp"
+		}
+	}
+}
