@@ -1,0 +1,296 @@
+/* ============================================================
+   Hydrolift T18 — instrumentpanel
+   Native 1024x600. Färgspråket är strikt:
+     vit    = mätvärde
+     orange = slip, och ingenting annat
+     röd    = redline eller slip över gränsen
+     grön   = bra grepp
+   ============================================================ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0
+}
+
+:root {
+  --black: #000;
+  --hair: #131316;
+  --line: #3a3a42;
+  --white: #fff;
+  --dim: #9a9aa2;
+  --orange: #ff6200;
+  --red: #ff2b2b;
+  --green: #00974e;
+  --yellow: #e7e302;
+  --seg: 10px;
+  /* segmentbredd */
+  --gapw: 2px;
+  /* mellanrum mellan segment */
+}
+
+html,
+body {
+  background: #0a0a0b;
+  height: 100%;
+  font-family: 'Saira Condensed', 'Arial Narrow', system-ui, sans-serif;
+  font-variant-numeric: tabular-nums;
+  -webkit-font-smoothing: antialiased;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+#dash {
+  width: 1024px;
+  height: 600px;
+  background: var(--black);
+  color: var(--white);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 14px 20px 16px;
+  transform-origin: center;
+  position: relative;
+}
+
+.lab {
+  font-size: 25px;
+  font-weight: 700;
+  letter-spacing: .3em;
+  color: var(--dim);
+  text-transform: uppercase;
+}
+
+/* ---------- RPM: segmenterad kil ---------- */
+.rpmwrap {
+  position: relative;
+  height: 104px;
+  flex: none
+}
+
+.wedge {
+  position: absolute;
+  inset: 0;
+  clip-path: polygon(0 58%, 100% 0, 100% 100%, 0 100%);
+  background: var(--hair);
+}
+
+/* stapeln = varvtal */
+.wfill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 0;
+  background: var(--white);
+  transition: width .08s linear, background .15s linear;
+}
+
+/* gapet = slip */
+.wgap {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  background: var(--orange);
+  transition: left .08s linear, width .08s linear, background .15s linear;
+}
+
+.wzone {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  background: rgba(255, 43, 43, .26)
+}
+
+/* skär ut mellanrummen mellan segmenten */
+.segmask {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(90deg,
+      transparent 0 var(--seg), #000 var(--seg) calc(var(--seg) + var(--gapw)));
+}
+
+/* grepp-markören: där varvtalet skulle legat vid noll slip */
+.ghost {
+  position: absolute;
+  top: -3px;
+  bottom: -3px;
+  width: 3px;
+  background: var(--white);
+  left: 0;
+  transition: left .08s linear;
+  z-index: 3;
+}
+
+.ghost::before {
+  content: '';
+  position: absolute;
+  bottom: 100%;
+  left: -5px;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-bottom: 7px solid var(--white);
+}
+
+.rpmlab {
+  position: absolute;
+  right: 6px;
+  top: 3px;
+  z-index: 4;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: .3em;
+  color: var(--dim);
+}
+
+/* ---------- hero: varvtal + slip ---------- */
+.hero {
+  display: grid;
+  grid-template-columns: 1.45fr 1fr 1fr;
+  gap: 20px;
+  flex: none
+}
+
+.box {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end
+}
+
+.big {
+  font-size: 100px;
+  font-weight: 800;
+  line-height: .78;
+  letter-spacing: -.035em;
+  display: flex;
+  align-items: baseline;
+  gap: 9px;
+}
+
+.big .u {
+  font-size: 29px;
+  font-weight: 700;
+  color: var(--dim);
+  letter-spacing: .04em
+}
+
+/* .mid {
+  font-size: 100px
+}
+.mid {
+  font-size: 100px
+} */
+
+.mid .u {
+  font-size: 26px
+}
+
+/* ---------- botten: tre stapelmätare ---------- */
+.row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 1px;
+  background: var(--line);
+  border: 1px solid var(--line);
+  flex: 1;
+}
+
+.cell {
+  background: var(--black);
+  padding: 10px 10px 9px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.num {
+  font-size: 80px;
+  font-weight: 800;
+  line-height: .84;
+  letter-spacing: -.03em;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.num .u {
+  font-size: 23px;
+  font-weight: 700;
+  color: var(--dim)
+}
+
+.bar {
+  position: relative;
+  height: 60px;
+  background: var(--hair);
+  border: 1px solid var(--line);
+  margin-top: 6px;
+}
+
+.bfill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 0;
+  background: var(--orange);
+  transition: width .12s linear;
+}
+
+.bar::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(90deg,
+      transparent 0 var(--seg), #000 var(--seg) calc(var(--seg) + var(--gapw)));
+}
+
+.scale {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 5px;
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: .05em;
+  color: var(--dim);
+}
+
+.warn {
+  color: var(--yellow)
+}
+.bad {
+  color: var(--red)
+}
+
+.ok {
+  color: var(--green)
+}
+
+/* länkbortfall: frusna siffror i 60 knop är farligare än ingen skärm alls */
+#stale {
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 43, 43, .93);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  font-size: 64px;
+  font-weight: 800;
+  letter-spacing: .1em;
+  z-index: 10;
+}
+
+#stale.on {
+  display: flex
+}
+
+@media (prefers-reduced-motion:reduce) {
+  * {
+    transition: none !important
+  }
+}
