@@ -84,6 +84,6 @@ TBD
 
 ---
 <p align="left">
-  <img src="docs/plutoid_engineering.png" alt="Dashboard" width="200">
+  <img src="Docs/plutoid_engineering.png" alt="logo" width="200">
 </p>
 
