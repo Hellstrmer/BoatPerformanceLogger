@@ -2,11 +2,13 @@
 #include <Arduino.h>
 #include <esp_now.h>
 
-uint8_t receiverMAC[6];
+extern uint8_t receiverMAC[6];
 
 struct SensorData {
   float posMM;
   float RPM;
+  bool overheat;
+  bool oilLow;
 };
 
 struct configData {
@@ -16,4 +18,4 @@ struct configData {
 };
 
 void initESPNow();
-void sendSensorData(float posMM, float RPM);
+void sendSensorData(float posMM, float RPM, bool overheat, bool oilLow);

@@ -1,6 +1,6 @@
 #include "Arduino.h"
 #include "prefs.h"
-#include "encoder.h"
+#include "encoder/encoder.h"
 
 void saveToPrefs(unsigned long &lastSave)
 {

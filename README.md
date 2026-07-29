@@ -1,6 +1,6 @@
 # BoatPerformanceLogger
 
-Telemetry and instrumentation system for a Hydrolift T18 with a Yamaha Autolube 150 hp outboard. Built under the **Plutoid Engineering** brand.
+Telemetry and instrumentation system for a Hydrolift T18 with a Yamaha Autolube D150H 65N 150 hp  outboard. Built under the **Plutoid Engineering** brand.
 
 The system reads sensors at the engine, streams live data to a display over ESP-NOW, and (in progress) logs everything to SD for later analysis — the goal being to work out which trim, jackplate height and propeller combination actually runs fastest.
 
@@ -26,6 +26,7 @@ Two ESP32 nodes talking over ESP-NOW:
 | Pitch / roll / G | BNO085 IMU (on-chip fusion) | Planned |
 | Propeller slip | Calculated from RPM, gear ratio, prop pitch and GPS speed | Planned |
 | Fuel flow | Derived from an RPM→fuel curve built from tank top-ups | Planned |
+| Alarms | Read out original alarms for overheat and low oil | planned |
 
 ## Propeller slip
 
@@ -82,5 +83,7 @@ Several values must be set for your specific engine and prop before slip and RPM
 TBD
 
 ---
+<p align="left">
+  <img src="docs/plutoid_engineering.png" alt="Dashboard" width="200">
+</p>
 
-*Plutoid Engineering*

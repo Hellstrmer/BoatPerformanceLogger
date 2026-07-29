@@ -1,6 +1,6 @@
 #include "espnow.h"
-#include "encoder.h"
-#include "rpm.h"
+#include "encoder/encoder.h"
+#include "rpm/rpm.h"
 #include <WiFi.h>
 
 uint8_t receiverMAC[] = {0x54, 0x32, 0x04, 0x33, 0x62, 0xC4};
@@ -16,8 +16,8 @@ void onDataReceived(const esp_now_recv_info_t *info, const uint8_t *data, int le
 }
 
 
-void sendSensorData(float posMM, float RPM) {
-  SensorData data = {posMM, RPM};
+void sendSensorData(float posMM, float RPM, bool overheat, bool oilLow) {
+  SensorData data = {posMM, RPM, overheat, oilLow};
   esp_now_send(receiverMAC, (uint8_t*)&data, sizeof(data));
 }
 

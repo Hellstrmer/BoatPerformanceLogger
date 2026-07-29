@@ -1,9 +1,10 @@
 #include <Arduino.h>
 
-#include "encoder.h"
-#include "espnow.h"
-#include "prefs.h"
-#include "rpm.h"
+#include "encoder/encoder.h"
+#include "espnow/espnow.h"
+#include "prefs/prefs.h"
+#include "rpm/rpm.h"
+#include "alarm/alarm.h"
 
 unsigned long sendInterval = 50; //20HZ
 unsigned long meassureInterval = 100; // 10HZ
@@ -16,6 +17,7 @@ void setup()
   initEncoder();
   initESPNow();
   initRPM();
+  initAlarms();
   delay(100);
 }
 
@@ -28,14 +30,14 @@ void loop()
   
  if (millis() - lastReadInterval > meassureInterval) {
     RPM = readRPM();
+    readAlarms();
     lastReadInterval = millis();
 }
 
  if (millis() - lastSendInterval > sendInterval) {
     float posMM = encoderGetPositionMM();
-    sendSensorData(posMM, RPM);
+    sendSensorData(posMM, RPM, overheat, oilLow);    
     lastSendInterval = millis();
-
 }
   // Save all values to internal memory
   // Enables memory for powerloss
