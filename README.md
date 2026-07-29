@@ -11,7 +11,7 @@ Two ESP32 nodes talking over ESP-NOW:
 | Node | Board | Role |
 |------|-------|------|
 | **BoatPerformanceSensor** | ESP32 | Reads all sensors at the engine, pitch and GPS, logs to SD, serves the dashboard over its own AP |
-| **BoatPerformanceDisplay** | ESP32-C6 | Round GC9A01A display + web dashboard at the helm | *Will be removed from project*
+| **BoatPerformanceDisplay** | ESP32-C6 | Round GC9A01A display + web dashboard at the helm  *Will be removed from project* |
 | **BoatPerformanceDash** | Raspberry Pi *(Unknow model yet)* | 7" HDMI Screen + web dashboard accessable from Mobile |
 
 
@@ -42,19 +42,19 @@ V_theoretical (kn) ≈ (RPM × pitch_in) / (gear_ratio × 1215)
 
 ```
 BoatPerformanceLogger/
-├── BoatPerformanceDash/    # 7" Dash (PlatformIO project)
+├── BoatPerformanceDash/    # 7" Dash (Raspberry Pi)
 ├── BoatPerformanceSensor/    # engine node (PlatformIO project)
-├── BoatPerformanceDisplay/   # heWill be removed
+├── BoatPerformanceDisplay/   # Will be removed
+├── Components/   # BOM etc.
 ├── .gitignore
 └── README.md
 ```
 
-Each subfolder is its own PlatformIO project — open the relevant one in VS Code to work on that node.
-
 ## Hardware
 
 - 1x ESP32 (sensor node classic ESP32, display node ESP32-C6)
-- 1 Raspberry Pi (Display)
+- 1 Raspberry Pi
+- 1 7" HDMI IPS panel
 - GC9A01A 240×240 round TFT (SPI) *Soon Removed*
 - Magnetic encoder for jackplate position
 - PC817 optocoupler + zener clamp for the tach signal
