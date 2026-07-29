@@ -3,17 +3,24 @@
 #include <Preferences.h>
 #include <esp_now.h>
 #include <WiFi.h>
+#include "driver/pcnt.h"
+#include "encoder.h"
 
 uint8_t receiverMAC[] = {0x54, 0x32, 0x04, 0x33, 0x62, 0xC4};
 struct SensorData {
   float posMM;
 };
 
-// Magnetic enocder variables
-const byte pinA = 32;
-const byte pinB = 12;
-const float mmPerPulse = 0.005;
-volatile long position = 0;
+// // Magnetic enocder variables
+// const byte pinA = 32;
+// const byte pinB = 12;
+// const float mmPerPulse = 0.005;
+// volatile long position = 0;
+
+// RPM Variables
+#define RPM_PIN 34 //Update this
+#define PULSES_PER_REV 6.0f //Update this // 12 poler / 2 — Kalibreras mot originalvarvräknare
+#define PCNT_UNIT PCNT_UNIT_0
 
 
 // Prefs memory variables
@@ -21,22 +28,38 @@ Preferences prefs;
 const long SaveInterval = 5000;
 const char *prefsPos = "pos";
 
-void encoderA()
-{
-  // Count pulses of magnetic strip when moving up
-  if (digitalRead(pinA) == digitalRead(pinB))  
-    position++;  
-  else  
-    position--;  
-}
+// void encoderA()
+// {
+//   // Count pulses of magnetic strip when moving up
+//   if (digitalRead(pinA) == digitalRead(pinB))  
+//     position++;  
+//   else  
+//     position--;  
+// }
 
-void encoderB()
-{
-  // Count pulses of magnetic strip when moving down
-  if (digitalRead(pinA) != digitalRead(pinB))  
-    position++;  
-  else  
-    position--;  
+// void encoderB()
+// {
+//   // Count pulses of magnetic strip when moving down
+//   if (digitalRead(pinA) != digitalRead(pinB))  
+//     position++;  
+//   else  
+//     position--;  
+// }
+
+// RPM
+void initRPM() {
+  pcnt_config_t cfg = {};
+  cfg.pulse_gpio_num = RPM_PIN;
+  cfg.ctrl_gpio_num = PCNT_PIN_NOT_USED;
+  cfg.channel = PCNT_CHANNEL_0;
+  cfg.unit = PCNT_UNIT;
+  cfg.pos_mode = PCNT_COUNT_INC;
+  cfg.neg_mode = PCNT_COUNT_DIS;
+  cfg.counter_h_lim = 32767;
+  cfg.counter_l_lim = 0;
+  pcnt_unit_config(&cfg);
+
+  
 }
 
 struct configData {
@@ -93,10 +116,11 @@ void setup()
   // Start the prefs memory and ready out all values
   prefs.begin("hydrolift", false);
   position = prefs.getLong(prefsPos, 0);
-  pinMode(pinA, INPUT_PULLUP);
-  pinMode(pinB, INPUT_PULLUP);
-  attachInterrupt(digitalPinToInterrupt(pinA), encoderA, CHANGE);
-  attachInterrupt(digitalPinToInterrupt(pinB), encoderB, CHANGE);
+  // pinMode(pinA, INPUT_PULLUP);
+  // pinMode(pinB, INPUT_PULLUP);
+  // attachInterrupt(digitalPinToInterrupt(pinA), encoderA, CHANGE);
+  // attachInterrupt(digitalPinToInterrupt(pinB), encoderB, CHANGE);
+  encoderInit();
   initESPNow();
   delay(100);
 }
