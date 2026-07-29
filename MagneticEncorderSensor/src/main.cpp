@@ -4,17 +4,18 @@
 #include <esp_now.h>
 #include <WiFi.h>
 #include "driver/pcnt.h"
+#include "encoder.h"
 
 uint8_t receiverMAC[] = {0x54, 0x32, 0x04, 0x33, 0x62, 0xC4};
 struct SensorData {
   float posMM;
 };
 
-// Magnetic enocder variables
-const byte pinA = 32;
-const byte pinB = 12;
-const float mmPerPulse = 0.005;
-volatile long position = 0;
+// // Magnetic enocder variables
+// const byte pinA = 32;
+// const byte pinB = 12;
+// const float mmPerPulse = 0.005;
+// volatile long position = 0;
 
 // RPM Variables
 #define RPM_PIN 34 //Update this
@@ -27,23 +28,23 @@ Preferences prefs;
 const long SaveInterval = 5000;
 const char *prefsPos = "pos";
 
-void encoderA()
-{
-  // Count pulses of magnetic strip when moving up
-  if (digitalRead(pinA) == digitalRead(pinB))  
-    position++;  
-  else  
-    position--;  
-}
+// void encoderA()
+// {
+//   // Count pulses of magnetic strip when moving up
+//   if (digitalRead(pinA) == digitalRead(pinB))  
+//     position++;  
+//   else  
+//     position--;  
+// }
 
-void encoderB()
-{
-  // Count pulses of magnetic strip when moving down
-  if (digitalRead(pinA) != digitalRead(pinB))  
-    position++;  
-  else  
-    position--;  
-}
+// void encoderB()
+// {
+//   // Count pulses of magnetic strip when moving down
+//   if (digitalRead(pinA) != digitalRead(pinB))  
+//     position++;  
+//   else  
+//     position--;  
+// }
 
 // RPM
 void initRPM() {
@@ -115,10 +116,11 @@ void setup()
   // Start the prefs memory and ready out all values
   prefs.begin("hydrolift", false);
   position = prefs.getLong(prefsPos, 0);
-  pinMode(pinA, INPUT_PULLUP);
-  pinMode(pinB, INPUT_PULLUP);
-  attachInterrupt(digitalPinToInterrupt(pinA), encoderA, CHANGE);
-  attachInterrupt(digitalPinToInterrupt(pinB), encoderB, CHANGE);
+  // pinMode(pinA, INPUT_PULLUP);
+  // pinMode(pinB, INPUT_PULLUP);
+  // attachInterrupt(digitalPinToInterrupt(pinA), encoderA, CHANGE);
+  // attachInterrupt(digitalPinToInterrupt(pinB), encoderB, CHANGE);
+  encoderInit();
   initESPNow();
   delay(100);
 }
