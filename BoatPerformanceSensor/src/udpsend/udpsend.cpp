@@ -49,15 +49,20 @@ static void CheckConnection()
         }        
 }
 
-void sendSensorDataUDP(float posMM, float rpm, bool overheat, bool oilLow)
+void sendSensorDataUDP(float lift, float trim, float rpm, bool overheat, bool oilLow, float kn, float waterPressure, float fuel)
 {
     CheckConnection();
     // Convert to JSON
     doc["ms"] = millis();
-    doc["lift"] = posMM;
+    doc["lift"] = lift;
+    doc["trim"] = trim;
     doc["rpm"] = rpm;
     doc["overheat"] = overheat;
     doc["oilLow"] = oilLow;
+    doc["kn"] = kn;
+    doc["waterpressure"] = waterPressure;
+    doc["fuel"] = fuel;
+    
 
     char buf[256];
     size_t n = serializeJson(doc, buf);
