@@ -21,14 +21,19 @@ def udp_listener():
 
     while True:
         data, addr = sock.recvfrom(1024)
-
+        # Load JSON Data
         try: 
             latest = json.loads(data.decode())
             latest["pi_time"] = datetime.now().isoformat(timespec='milliseconds')
+            ######### FIXME ###############
+            # Until real sensors are connected
+            latest["overheat"] = 0
+            latest["oilLow"] = 0
         except (json.JSONDecodeError, ...):
+            latest["link"] = 0
             continue
-        #print(f"{timestamp}  rpm: {latest["rpm"]}  lift: {latest["lift"]}")
 
+# Configure Flask Webserver
 app = Flask(__name__)
 
 @app.route("/status")
@@ -43,7 +48,7 @@ def index():
 def files(filename):
     return send_from_directory(DASH_DIR, filename)
 
-
+# Start UDP And Flask on different Threads
 if __name__ == "__main__":
     #Separate threads for UDP and Flask
     threading.Thread(target=udp_listener, daemon=True).start()
