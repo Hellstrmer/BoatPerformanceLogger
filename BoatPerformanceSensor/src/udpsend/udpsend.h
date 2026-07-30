@@ -5,4 +5,4 @@
 #include <ArduinoJson.h>
 
 void initUDP();
-void sendSensorDataUDP(float lift, float trim, float rpm, bool overheat, bool oilLow, float kn, float waterPressure, float fuel);
+void sendSensorDataUDP(float lift, float trim, float rpm, int overheat, int oilLow, float kn, float waterPressure, float fuel);
