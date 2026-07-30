@@ -12,6 +12,7 @@ unsigned long meassureInterval = 100; // 10HZ
 
 // DEMO
 float RPMDEMO = 2100.0;
+float kn = 0.0;
 
 
 void setup()
@@ -41,14 +42,20 @@ void loop()
 }
 
  if (millis() - lastSendInterval > sendInterval) {
-    float posMM = encoderGetPositionMM();
-    posMM = 120;
-    if (RPMDEMO > 6200.0)
-    {
-      RPMDEMO = 2000.0;
-    }
-    RPMDEMO += 100.0;
-    sendSensorDataUDP(posMM, RPMDEMO, overheat, oilLow);    
+    float lift = encoderGetPositionMM();
+    // Demo Data
+    lift = 120;
+    float trim = 10.0;
+    float waterPreassure = 10.0;
+    float fuel = 25.0;
+    // if (RPMDEMO > 6200.0)
+    // {
+    //   RPMDEMO = 2000.0;
+    // }
+    // RPMDEMO += 30.0;
+    RPMDEMO = 6000.0;
+    kn = (RPMDEMO / 100 - 2);
+    sendSensorDataUDP(lift, trim, RPMDEMO, overheat, oilLow, kn, waterPreassure, fuel);    
 
     lastSendInterval = millis();
 }
