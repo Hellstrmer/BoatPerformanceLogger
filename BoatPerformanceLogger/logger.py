@@ -21,33 +21,19 @@ def udp_listener():
 
     while True:
         data, addr = sock.recvfrom(1024)
-
+        # Load JSON Data
         try: 
             latest = json.loads(data.decode())
             latest["pi_time"] = datetime.now().isoformat(timespec='milliseconds')
+            ######### FIXME ###############
+            # Until real sensors are connected
+            latest["overheat"] = 0
+            latest["oilLow"] = 0
         except (json.JSONDecodeError, ...):
+            latest["link"] = 0
             continue
 
-        # Get data from ESP and split it
-
-        # inputs = data.decode().strip().split(",")      
-        
-        # # Sort data
-        # latest = {
-        #     "esp_ms": inputs[0],
-        #     "lift": float(inputs[1]),
-        #     "rpm": float(inputs[2]),
-        #     "overheat": int(inputs[3]),
-        #     "oilLow": int(inputs[4]),
-        #     "kn": 0,
-        #     "trim": 0,
-        #     "fuel": 0,
-        # }      
-            #Time
-        #timestamp = datetime.now().isoformat(timespec='milliseconds')
-
-        #print(f"{timestamp}  rpm: {latest["rpm"]}  lift: {latest["lift"]}")
-
+# Configure Flask Webserver
 app = Flask(__name__)
 
 @app.route("/status")
@@ -62,7 +48,7 @@ def index():
 def files(filename):
     return send_from_directory(DASH_DIR, filename)
 
-
+# Start UDP And Flask on different Threads
 if __name__ == "__main__":
     #Separate threads for UDP and Flask
     threading.Thread(target=udp_listener, daemon=True).start()
