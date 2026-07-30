@@ -2,6 +2,10 @@
 #include "prefs.h"
 #include "encoder/encoder.h"
 
+Preferences prefs;
+const char *prefsPos = "pos";
+const long SaveInterval = 5000;
+
 void saveToPrefs(unsigned long &lastSave)
 {
   if (millis() - lastSave > SaveInterval)

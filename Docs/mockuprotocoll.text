@@ -1,0 +1,17 @@
+┌─────────────┐   UDP-ström     ┌──────────────────────────┐
+│ Sensor-ESP  │ ──(WiFi)──────► │ Raspberry Pi (AP)        │
+│             │   ~20 Hz        │                          │
+│ RPM         │                 │  ┌────────────────────┐  │
+│ Encoder     │                 │  │ logger  → loggfil  │  │
+│ Larm        │                 │  ├────────────────────┤  │
+│ GPS/IMU     │                 │  │ webserver → dash   │──┼──► 7" skärm
+│ (framöver)  │                 │  ├────────────────────┤  │
+└─────────────┘                 │  │ sync → homelab     │  │
+                                │  └────────────────────┘  │
+                                └──────────┬───────────────┘
+                                           │ när mobildata finns
+                                           ▼
+                                  ┌──────────────────┐
+                                  │ Homelab          │
+                                  │ InfluxDB+Grafana │
+                                  └──────────────────┘

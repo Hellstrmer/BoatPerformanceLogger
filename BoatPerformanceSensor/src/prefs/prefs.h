@@ -2,9 +2,9 @@
 #include <Arduino.h>
 #include <Preferences.h>
 
-Preferences prefs;
-const long SaveInterval = 5000;
-const char *prefsPos = "pos";
+extern Preferences prefs;
+extern const long SaveInterval;
+extern const char *prefsPos;
 
 void saveToPrefs(unsigned long &lastSave);
 void initPrefs();

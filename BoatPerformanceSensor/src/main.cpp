@@ -1,22 +1,28 @@
 #include <Arduino.h>
 
 #include "encoder/encoder.h"
-#include "espnow/espnow.h"
+//#include "espnow/espnow.h"
 #include "prefs/prefs.h"
-#include "rpm/rpm.h"
+//#include "rpm/rpm.h"
 #include "alarm/alarm.h"
+#include "udpsend/udpsend.h"
 
 unsigned long sendInterval = 50; //20HZ
 unsigned long meassureInterval = 100; // 10HZ
+
+// DEMO
+float RPMDEMO = 2100.0;
 
 
 void setup()
 {
   Serial.begin(115200);
   initPrefs();
-  initEncoder();
-  initESPNow();
-  initRPM();
+  //initEncoder();
+  //initESPNow();
+  delay(500);
+  initUDP();
+  //initRPM();
   initAlarms();
   delay(100);
 }
@@ -29,14 +35,21 @@ void loop()
 
   
  if (millis() - lastReadInterval > meassureInterval) {
-    RPM = readRPM();
+    //RPM = readRPM();
     readAlarms();
     lastReadInterval = millis();
 }
 
  if (millis() - lastSendInterval > sendInterval) {
     float posMM = encoderGetPositionMM();
-    sendSensorData(posMM, RPM, overheat, oilLow);    
+    posMM = 120;
+    if (RPMDEMO > 6200.0)
+    {
+      RPMDEMO = 2000.0;
+    }
+    RPMDEMO += 100.0;
+    sendSensorDataUDP(posMM, RPMDEMO, overheat, oilLow);    
+
     lastSendInterval = millis();
 }
   // Save all values to internal memory

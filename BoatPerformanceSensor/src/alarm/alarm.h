@@ -1,8 +1,8 @@
 #pragma once
 #include <Arduino.h>
 
-#define PIN_OVERHEAT 32 //Update this
-#define PIN_OIL 31 //Update this
+#define PIN_OVERHEAT 24 //Update this
+#define PIN_OIL 10 //Update this
 
 extern bool overheat;
 extern bool oilLow;
