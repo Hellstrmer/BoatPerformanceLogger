@@ -25,7 +25,7 @@
   --red: #ff2b2b;
   --green: #00974e;
   --yellow: #e7e302;
-  --seg: 10px;
+  --seg: 8px;
   /* segmentbredd */
   --gapw: 2px;
   /* mellanrum mellan segment */
@@ -57,6 +57,23 @@ body {
   position: relative;
 }
 
+#Alarm {
+  position:absolute;
+  inset:0;
+  border:12px solid var(--red);
+  background:transparent;
+  display: none;
+  z-index:10; 
+}
+#Alarm.on {
+  display:flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 120px;
+  font-weight: bold;
+  color:var(--red);
+}
+
 .lab {
   font-size: 25px;
   font-weight: 700;
@@ -70,6 +87,13 @@ body {
   position: relative;
   height: 104px;
   flex: none
+}
+
+.rpmwrap img {
+  width: 110px;
+  position: relative;
+  margin-left: 10px;
+  z-index: 5;
 }
 
 .wedge {
@@ -86,6 +110,7 @@ body {
   width: 0;
   background: var(--white);
   transition: width .08s linear, background .15s linear;
+  z-index: 1;
 }
 
 /* gapet = slip */
@@ -97,6 +122,7 @@ body {
   width: 0;
   background: var(--orange);
   transition: left .08s linear, width .08s linear, background .15s linear;
+  z-index: 3;
 }
 
 .wzone {
@@ -104,7 +130,8 @@ body {
   top: 0;
   bottom: 0;
   right: 0;
-  background: rgba(255, 43, 43, .26)
+  background: rgba(255, 43, 43, .26);
+  z-index: 2;
 }
 
 /* skär ut mellanrummen mellan segmenten */
@@ -179,13 +206,6 @@ body {
   color: var(--dim);
   letter-spacing: .04em
 }
-
-/* .mid {
-  font-size: 100px
-}
-.mid {
-  font-size: 100px
-} */
 
 .mid .u {
   font-size: 26px
@@ -271,7 +291,7 @@ body {
   color: var(--green)
 }
 
-/* länkbortfall: frusna siffror i 60 knop är farligare än ingen skärm alls */
+/* länkbortfall:*/
 #stale {
   position: absolute;
   inset: 0;
