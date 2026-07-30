@@ -17,3 +17,7 @@ Thumbs.db
 *.elf
 *.bin
 *.hex
+
+# Loggfiler — maskindata, aldrig till git
+logs/*.influx
+!logs/.gitkeep
