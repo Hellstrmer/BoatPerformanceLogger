@@ -2,6 +2,7 @@ import socket
 import threading
 from datetime import datetime
 from flask import Flask, jsonify, send_from_directory
+import json
 
 # Delad data
 latest = {}
@@ -20,21 +21,30 @@ def udp_listener():
 
     while True:
         data, addr = sock.recvfrom(1024)
+
+        try: 
+            latest = json.loads(data.decode())
+            latest["pi_time"] = datetime.now().isoformat(timespec='milliseconds')
+        except (json.JSONDecodeError, ...):
+            continue
+
         # Get data from ESP and split it
-        inputs = data.decode().strip().split(",")        
-        # Sort data
-        latest = {
-            "esp_ms": inputs[0],
-            "lift": float(inputs[1]),
-            "rpm": float(inputs[2]),
-            "overheat": int(inputs[3]),
-            "oilLow": int(inputs[4]),
-            "kn": 0,
-            "trim": 0,
-            "fuel": 0,
-        }      
+
+        # inputs = data.decode().strip().split(",")      
+        
+        # # Sort data
+        # latest = {
+        #     "esp_ms": inputs[0],
+        #     "lift": float(inputs[1]),
+        #     "rpm": float(inputs[2]),
+        #     "overheat": int(inputs[3]),
+        #     "oilLow": int(inputs[4]),
+        #     "kn": 0,
+        #     "trim": 0,
+        #     "fuel": 0,
+        # }      
             #Time
-        timestamp = datetime.now().isoformat(timespec='milliseconds')
+        #timestamp = datetime.now().isoformat(timespec='milliseconds')
 
         #print(f"{timestamp}  rpm: {latest["rpm"]}  lift: {latest["lift"]}")
 

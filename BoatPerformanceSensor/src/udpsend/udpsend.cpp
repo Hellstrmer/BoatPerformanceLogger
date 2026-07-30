@@ -7,6 +7,12 @@ static const uint16_t PI_PORT = 5005;
 
 WiFiUDP udp;
 
+JsonDocument doc;
+
+
+char buf[256];
+size_t n = serializeJson(doc, buf);
+
 void initUDP()
 {
     WiFi.mode(WIFI_STA);
@@ -46,10 +52,16 @@ static void CheckConnection()
 void sendSensorDataUDP(float posMM, float rpm, bool overheat, bool oilLow)
 {
     CheckConnection();
-    char buf[96];
-    int n = snprintf(buf, sizeof(buf),
-    "%lu,%.1f,%.0f,%d,%d\n",
-    millis(), posMM, rpm, overheat, oilLow);
+    // Convert to JSON
+    doc["ms"] = millis();
+    doc["lift"] = posMM;
+    doc["rpm"] = rpm;
+    doc["overheat"] = overheat;
+    doc["oilLow"] = oilLow;
+
+    char buf[256];
+    size_t n = serializeJson(doc, buf);
+
 
     udp.beginPacket(PiIP, PI_PORT);
     udp.write((uint8_t*)buf, n);
