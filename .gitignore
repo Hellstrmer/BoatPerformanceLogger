@@ -19,5 +19,5 @@ Thumbs.db
 *.hex
 
 # Loggfiler — maskindata, aldrig till git
-logs/*.influx
-!logs/.gitkeep
+**/logs/*.influx
+!**/logs/.gitkeep
