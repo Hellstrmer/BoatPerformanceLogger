@@ -1,8 +1,11 @@
 import socket
 import threading
+import json
+import time
+
 from datetime import datetime
 from flask import Flask, jsonify, send_from_directory
-import json
+
 
 # Delad data
 latest = {}
@@ -18,13 +21,21 @@ def udp_listener():
     print(f"Lyssnar på UDP {UDP_PORT}...")
 
     global latest
+    logfile = open("logs/test.influx", "a")
 
     while True:
         data, addr = sock.recvfrom(1024)
         # Load JSON Data
         try: 
-            latest = json.loads(data.decode())
+            d = json.loads(data.decode())
+            latest = d
             latest["pi_time"] = datetime.now().isoformat(timespec='milliseconds')
+
+            # Logger file
+            line = build_line(d)
+            logfile.write(line + "\n")
+            logfile.flush()
+
             ######### FIXME ###############
             # Until real sensors are connected
             latest["overheat"] = 0
@@ -32,6 +43,12 @@ def udp_listener():
         except (json.JSONDecodeError, ...):
             latest["link"] = 0
             continue
+
+
+
+def build_line(d):
+    ts = time.time_ns()
+    return f"boat rpm={d['rpm']},lift={d['lift']},trim={d['trim']},overheat={d['overheat']},oilLow={d['oilLow']},kn={d['kn']},waterpressure={d['waterpressure']},fuel={d['fuel']} {ts}"
 
 # Configure Flask Webserver
 app = Flask(__name__)
