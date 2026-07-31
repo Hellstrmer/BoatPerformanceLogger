@@ -1,0 +1,14 @@
+[Unit]
+Description=Boat Performance Logger
+After=network.target
+
+[Service]
+Type=simple
+User=hydroliftpi
+WorkingDirectory=/home/hydroliftpi/BoatPerformanceLogger/BoatPerformanceDash
+ExecStart=/usr/bin/python3 /home/hydroliftpi/BoatPerformanceLogger/BoatPerformanceDash/logger.py
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target

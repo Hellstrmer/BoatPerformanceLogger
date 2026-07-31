@@ -92,7 +92,7 @@ async function poll(){
     
   } catch {
     $('stale').classList.toggle('on', Date.now() - lastEspChange > STALE_MS);
-    $('stale').textContent = "SERVER CRASHED";    
+    $('stale').textContent = "SERVER OFFLINE";    
   }
 }
 
