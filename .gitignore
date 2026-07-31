@@ -21,3 +21,7 @@ Thumbs.db
 # Loggfiler — maskindata, aldrig till git
 **/logs/*.influx
 !**/logs/.gitkeep
+
+.env
+secrets.*
+*.token
