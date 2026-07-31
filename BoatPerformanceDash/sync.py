@@ -22,6 +22,10 @@ SYNCED_DIR = os.path.join(DASH_DIR, "synced")
 def send_file(path):
     with open(path) as f:
         data = f.read()
+    name = os.path.basename(path)
+    trip_id = name.replace("trip_", "").replace(".influx", "")
+    data = tag_data(data, trip_id)
+    
     # Create variables to send data
     url = f"{INFLUX_URL}/api/v2/write"
     params = {"org": INFLUX_ORG, "bucket": INFLUX_BUCKET, "precision": "ns"}
@@ -33,6 +37,15 @@ def send_file(path):
     # Send data to Influx
     r = requests.post(url, params=params, headers=headers, data=data, timeout=10)
     return r.status_code
+
+def tag_data(raw, trip_id):
+    lines = raw.strip().split("\n")
+    tagged = []
+    for line in lines:
+        if line:
+            tagged.append(line.replace("boat ", f"boat,trip={trip_id} ", 1))
+    return "\n".join(tagged)
+
 
 def sync_all():
     # Read all files from pending folder
