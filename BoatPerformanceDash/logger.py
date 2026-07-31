@@ -2,6 +2,7 @@ import socket
 import threading
 import json
 import time
+import os
 
 from datetime import datetime
 from flask import Flask, jsonify, send_from_directory
@@ -11,6 +12,7 @@ from flask import Flask, jsonify, send_from_directory
 latest = {}
 
 DASH_DIR = "/home/hydroliftpi/BoatPerformanceLogger/BoatPerformanceDash"
+LOG_DIR = os.path.join(DASH_DIR, "logs")
 
 def udp_listener():
     UDP_IP = "0.0.0.0"
@@ -18,42 +20,62 @@ def udp_listener():
 
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     sock.bind((UDP_IP, UDP_PORT))
+    #Stop the socket from trying to recieve after 1 second
+    sock.settimeout(1.0)
     print(f"Lyssnar på UDP {UDP_PORT}...")
 
     global latest
-    name = datetime.now().strftime("logs/trip_%Y-%m-%d_%H%M%S.influx")
-    logfile = open(name, "a")
+    logfile = None
     buffer = []
     last_flush = time.time()
+    last_packet = time.time()
+
+    SESSION_TIMEOUT = 30 # Session finished when no data arrives for this time
 
     while True:
-        data, addr = sock.recvfrom(1024)
-        # Load JSON Data
         try: 
+            data, addr = sock.recvfrom(1024)
+            # Load JSON Data
             d = json.loads(data.decode())
             latest = d
             latest["pi_time"] = datetime.now().isoformat(timespec='milliseconds')
+            last_packet = time.time()
+
+            #Open new logfile if None is open
+            if logfile is None:                
+                name = datetime.now().strftime("trip_%Y-%m-%d_%H%M%S.influx")
+                path = os.path.join(LOG_DIR, name)
+                logfile = open(path, "a")
+                print(f"New Session Started: {name}")
 
             # Logfile
             buffer.append(build_line(d))
+        except socket.timeout:
+            pass # Do nothing for the first time
+        except json.JSONDecodeError:
+            continue # Broken package, skip
 
-            if time.time() - last_flush > 1.0:
-                if buffer:
-                    logfile.write("\n".join(buffer) + "\n") #Join all rows in buffer
-                    logfile.flush()
-                    buffer.clear()
-                last_flush = time.time()
-            #line = build_line(d)
-            #logfile.write(line + "\n")
-            #logfile.flush()
+        # Save data to log on interval
+        if logfile and time.time() - last_flush > 1.0:
+            if buffer:
+                logfile.write("\n".join(buffer) + "\n") #Join all rows in buffer
+                logfile.flush()
+                buffer.clear()
+            last_flush = time.time()
 
-            ######### FIXME ###############
-            # Until real sensors are connected
-            latest["overheat"] = 0
-            latest["oilLow"] = 0
-        except (json.JSONDecodeError, ...):
-            latest["link"] = 0
-            continue
+        ######### FIXME ###############
+        # Until real sensors are connected
+        latest["overheat"] = 0
+        latest["oilLow"] = 0
+        
+        if logfile and time.time() - last_packet > SESSION_TIMEOUT:
+            if buffer:
+                logfile.write("\n".join(buffer) + "\n") #Join all rows in buffer
+                logfile.flush()
+                buffer.clear()
+            logfile.close()
+            logfile = None
+            print("Session Finished")
 
 
 
@@ -69,6 +91,8 @@ def build_line(d):
             f"overheat={int(d.get('overheat',0))}i,"
             f"oilLow={int(d.get('oilLow',0))}i "
             f"{ts}")
+
+
 # Configure Flask Webserver
 app = Flask(__name__)
 
