@@ -22,6 +22,12 @@ Thumbs.db
 **/logs/*.influx
 !**/logs/.gitkeep
 
+**/pending/*.influx
+!**/pending/.gitkeep
+
+**/synced/*.influx
+!**/synced/.gitkeep
+
 .env
 secrets.*
 *.token

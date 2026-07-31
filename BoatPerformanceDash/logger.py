@@ -12,7 +12,11 @@ from flask import Flask, jsonify, send_from_directory
 latest = {}
 
 DASH_DIR = "/home/hydroliftpi/BoatPerformanceLogger/BoatPerformanceDash"
+# Bind folders and make sure they exists.
 LOG_DIR = os.path.join(DASH_DIR, "logs")
+os.makedirs(LOG_DIR, exist_ok=True)
+PENDING_DIR = os.path.join(DASH_DIR, "pending")
+os.makedirs(PENDING_DIR, exist_ok=True) 
 
 def udp_listener():
     UDP_IP = "0.0.0.0"
@@ -75,7 +79,11 @@ def udp_listener():
                 buffer.clear()
             logfile.close()
             logfile = None
+            oldpath = os.path.join(LOG_DIR, name)
+            newpath = os.path.join(PENDING_DIR, name)
+            os.replace(oldpath, newpath)
             print("Session Finished")
+
 
 
 
