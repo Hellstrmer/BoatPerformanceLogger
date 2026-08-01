@@ -1,0 +1,12 @@
+{
+  "prop_gear": 2,
+  "prop_pitch": 25,
+  "redline": 5500,
+  "rpm_max": 6200,
+  "lift_min": 0,
+  "lift_max": 154.2,
+  "trim_min": 0,
+  "trim_max": 45,
+  "water_min": 10,
+  "water_max": 1000
+}

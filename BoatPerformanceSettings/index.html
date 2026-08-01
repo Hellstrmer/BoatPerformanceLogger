@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@600;700;800&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="settings.css">
+    <link rel="stylesheet" href="/settings/settings.css">
 </head>
 
 <body>
@@ -53,14 +53,14 @@
                 <div class="field-label">
                     <div class="swatch"></div>Varvstopp
                 </div>
-                <input class="field-input" type="number" id="engine_redline" step="0.1" inputmode="decimal"
+                <input class="field-input" type="number" id="redline" step="0.1" inputmode="decimal"
                     placeholder="mm">
             </div>
             <div class="field">
                 <div class="field-label">
                     <div class="swatch"></div>Max varvtal
                 </div>
-                <input class="field-input" type="number" id="enginer_rpm_max" step="0.1" inputmode="decimal"
+                <input class="field-input" type="number" id="rpm_max" step="0.1" inputmode="decimal"
                     placeholder="mm">
             </div>
         </div>
@@ -70,14 +70,14 @@
                 <div class="field-label">
                     <div class="swatch_lower"></div>Undre gräns
                 </div>
-                <input class="field-input" type="number" id="lift_lower" step="0.1" inputmode="decimal"
+                <input class="field-input" type="number" id="lift_min" step="0.1" inputmode="decimal"
                     placeholder="mm">
             </div>
             <div class="field">
                 <div class="field-label">
                     <div class="swatch_upper"></div>Övre gräns
                 </div>
-                <input class="field-input" type="number" id="lift_upper" step="0.1" inputmode="decimal"
+                <input class="field-input" type="number" id="lift_max" step="0.1" inputmode="decimal"
                     placeholder="mm">
             </div>
             <button class="btn_setting" id="reset_lift">Nollställ position</button>
@@ -88,14 +88,14 @@
                 <div class="field-label">
                     <div class="swatch_lower"></div>Undre gräns
                 </div>
-                <input class="field-input" type="number" id="trim_lower" step="0.1" inputmode="decimal"
+                <input class="field-input" type="number" id="trim_min" step="0.1" inputmode="decimal"
                     placeholder="mm">
             </div>
             <div class="field">
                 <div class="field-label">
                     <div class="swatch_upper"></div>Övre gräns
                 </div>
-                <input class="field-input" type="number" id="trim_upper" step="0.1" inputmode="decimal"
+                <input class="field-input" type="number" id="trim_max" step="0.1" inputmode="decimal"
                     placeholder="mm">
             </div>
             <button class="btn_setting" id="reset_trim">Nollställ position</button>
@@ -106,23 +106,24 @@
                 <div class="field-label">
                     <div class="swatch_lower"></div>Undre gräns
                 </div>
-                <input class="field-input" type="number" id="water_lower" step="0.1" inputmode="decimal"
+                <input class="field-input" type="number" id="water_min" step="0.1" inputmode="decimal"
                     placeholder="mm">
             </div>
             <div class="field">
                 <div class="field-label">
                     <div class="swatch_upper"></div>Övre gräns
                 </div>
-                <input class="field-input" type="number" id="water_upper" step="0.1" inputmode="decimal"
+                <input class="field-input" type="number" id="water_max" step="0.1" inputmode="decimal"
                     placeholder="mm">
             </div>
         </div>
     </div>
+    <div class="status_bar" id="status_bar"></div>
     <button class="btn" id="save_settings">Spara</button>
 
     </div>
     <div class="toast" id="toast">Sparat</div>
-    <script src="settings.js"></script>
+    <script src="/settings/settings.js"></script>
 </body>
 
 </html>

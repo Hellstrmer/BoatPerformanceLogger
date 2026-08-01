@@ -5,13 +5,15 @@ import time
 import os
 
 from datetime import datetime
-from flask import Flask, jsonify, send_from_directory
+from flask import Flask, jsonify, send_from_directory, request
+from config import load_config, save_config
 
 
 # Delad data
 latest = {}
 
 DASH_DIR = "/home/hydroliftpi/BoatPerformanceLogger/BoatPerformanceDash"
+SETTINGS_DIR = "/home/hydroliftpi/BoatPerformanceLogger/BoatPerformanceSettings"
 # Bind folders and make sure they exists.
 LOG_DIR = os.path.join(DASH_DIR, "logs")
 os.makedirs(LOG_DIR, exist_ok=True)
@@ -112,6 +114,28 @@ def index():
 @app.route("/<path:filename>")
 def files(filename):
     return send_from_directory(DASH_DIR, filename)
+
+# Settings
+@app.route("/settings")
+def settings_index():
+    return send_from_directory(SETTINGS_DIR, "index.html")
+
+@app.route("/settings/<path:filename>")
+def settings_files(filename):
+    return send_from_directory(SETTINGS_DIR, filename)
+
+@app.route("/config")
+def get_config():
+    return jsonify(load_config())
+
+@app.route("/config", methods=["POST"])
+def set_config():
+    new = request.get_json(force=True)
+    if save_config(new):
+        return jsonify({"status": "ok"})
+    else: 
+        return jsonify({"error": "ogiltiga parametrar"}), 400
+
 
 # Start UDP And Flask on different Threads
 if __name__ == "__main__":
