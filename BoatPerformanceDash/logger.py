@@ -84,9 +84,6 @@ def udp_listener():
             os.replace(oldpath, newpath)
             print("Session Finished")
 
-
-
-
 def build_line(d):
     ts = time.time_ns()
     return (f"boat "

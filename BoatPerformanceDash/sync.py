@@ -14,10 +14,11 @@ CF_CLIENT_ID = os.getenv("CF_SERVICE_TOKEN_CLIENT_ID")
 CF_CLIENT_SECRET = os.getenv("CF_SERVICE_TOKEN_CLIENT_SECRET")
 
 DASH_DIR = "/home/hydroliftpi/BoatPerformanceLogger/BoatPerformanceDash"
-# Bind folders and make sure they exists.
 
+# Bind folders and make sure they exists.
 PENDING_DIR = os.path.join(DASH_DIR, "pending")
 SYNCED_DIR = os.path.join(DASH_DIR, "synced")
+os.makedirs(SYNCED_DIR, exist_ok=True) 
 
 def send_file(path):
     with open(path) as f:
