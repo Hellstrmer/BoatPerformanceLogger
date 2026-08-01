@@ -17,6 +17,8 @@ DEFAULTS = {
     "water_max": 1000.0,
     "fuel_min": 0,
     "fuel_max": 70,
+    "slip_warn": 12,
+    "slip_bad": 18
 }
 LIMITS = {
     "prop_gear":  (0.0, 10.0),
@@ -31,6 +33,8 @@ LIMITS = {
     "water_max": (0.0, 1000.0),
     "fuel_min": (0.0, 10000.0),
     "fuel_max": (0.0, 10000.0),
+    "slip_warn": (0, 100),
+    "slip_bad": (0, 100),
 }
 
 

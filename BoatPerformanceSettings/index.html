@@ -17,18 +17,6 @@
         <img src="plutoid_engineering.png" class="logo" alt="Pluto Engineering">
         <span class="header-title">Hydrolift</span>
     </div>
-    <!-- <div class="container">
-        <div class="pos-card">
-            <div class="pos-label">Aktuell höjd</div>
-            <div class="pos-value"><span id="pos">---</span><span class="unit">mm</span></div>
-            <div class="status-bar">
-                <div class="status-fill" id="fill"></div>
-            </div>
-            <div class="status-labels">
-                <span class="status-label" id="lower-ind">--</span>
-                <span class="status-label" id="upper-ind">--</span>
-            </div>
-        </div> -->
     <div class="section_top">
         <div class="section-title_top">Kalibrering</div>
         <div class="section" id="Propeller">
@@ -37,14 +25,41 @@
                 <div class="field-label">
                     <div class="swatch"></div>Utväxling
                 </div>
-                <input class="field-input" type="number" id="prop_gear" step="0.1" inputmode="decimal" placeholder="mm">
+                <div class="input-with-unit">
+                    <input class="field-input" type="number" id="prop_gear" step="0.01" inputmode="decimal"
+                        placeholder="förhållande">
+                    <span class="unit">:1</span>
+                </div>
             </div>
             <div class="field">
                 <div class="field-label">
                     <div class="swatch"></div>Stigning
                 </div>
-                <input class="field-input" type="number" id="prop_pitch" step="0.1" inputmode="decimal"
-                    placeholder="mm">
+                <div class="input-with-unit">
+                    <input class="field-input" type="number" id="prop_pitch" step="0.1" inputmode="decimal"
+                        placeholder="tum">
+                    <span class="unit">tum</span>
+                </div>
+            </div>
+            <div class="field">
+                <div class="field-label">
+                    <div class="swatch_lower"></div>Slip första gräns
+                </div>
+                <div class="input-with-unit">
+                    <input class="field-input" type="number" id="slip_warn" step="0.1" inputmode="decimal"
+                        placeholder="%">
+                    <span class="unit">%</span>
+                </div>
+            </div>
+            <div class="field">
+                <div class="field-label">
+                    <div class="swatch_upper"></div>Slip övre gräns
+                </div>
+                <div class="input-with-unit">
+                    <input class="field-input" type="number" id="slip_bad" step="0.1" inputmode="decimal"
+                        placeholder="%">
+                    <span class="unit">%</span>
+                </div>
             </div>
         </div>
         <div class="section" id="Motor">
@@ -53,15 +68,21 @@
                 <div class="field-label">
                     <div class="swatch"></div>Varvstopp
                 </div>
-                <input class="field-input" type="number" id="redline" step="0.1" inputmode="decimal"
-                    placeholder="mm">
+                <div class="input-with-unit">
+                    <input class="field-input" type="number" id="redline" step="1" inputmode="decimal"
+                        placeholder="rpm">
+                    <span class="unit">rpm</span>
+                </div>
             </div>
             <div class="field">
                 <div class="field-label">
                     <div class="swatch"></div>Max varvtal
                 </div>
-                <input class="field-input" type="number" id="rpm_max" step="0.1" inputmode="decimal"
-                    placeholder="mm">
+                <div class="input-with-unit">
+                    <input class="field-input" type="number" id="rpm_max" step="1" inputmode="decimal"
+                        placeholder="rpm">
+                    <span class="unit">rpm</span>
+                </div>
             </div>
         </div>
         <div class="section" id="Lift">
@@ -70,15 +91,21 @@
                 <div class="field-label">
                     <div class="swatch_lower"></div>Undre gräns
                 </div>
-                <input class="field-input" type="number" id="lift_min" step="0.1" inputmode="decimal"
-                    placeholder="mm">
+                <div class="input-with-unit">
+                    <input class="field-input" type="number" id="lift_min" step="0.1" inputmode="decimal"
+                        placeholder="mm">
+                    <span class="unit">mm</span>
+                </div>
             </div>
             <div class="field">
                 <div class="field-label">
                     <div class="swatch_upper"></div>Övre gräns
                 </div>
-                <input class="field-input" type="number" id="lift_max" step="0.1" inputmode="decimal"
-                    placeholder="mm">
+                <div class="input-with-unit">
+                    <input class="field-input" type="number" id="lift_max" step="0.1" inputmode="decimal"
+                        placeholder="mm">
+                    <span class="unit">mm</span>
+                </div>
             </div>
             <button class="btn_setting" id="reset_lift">Nollställ position</button>
         </div>
@@ -88,15 +115,21 @@
                 <div class="field-label">
                     <div class="swatch_lower"></div>Undre gräns
                 </div>
-                <input class="field-input" type="number" id="trim_min" step="0.1" inputmode="decimal"
-                    placeholder="mm">
+                <div class="input-with-unit">
+                    <input class="field-input" type="number" id="trim_min" step="0.1" inputmode="decimal"
+                        placeholder="grader">
+                    <span class="unit">°</span>
+                </div>
             </div>
             <div class="field">
                 <div class="field-label">
                     <div class="swatch_upper"></div>Övre gräns
                 </div>
-                <input class="field-input" type="number" id="trim_max" step="0.1" inputmode="decimal"
-                    placeholder="mm">
+                <div class="input-with-unit">
+                    <input class="field-input" type="number" id="trim_max" step="0.1" inputmode="decimal"
+                        placeholder="grader">
+                    <span class="unit">°</span>
+                </div>
             </div>
             <button class="btn_setting" id="reset_trim">Nollställ position</button>
         </div>
@@ -106,22 +139,50 @@
                 <div class="field-label">
                     <div class="swatch_lower"></div>Undre gräns
                 </div>
-                <input class="field-input" type="number" id="water_min" step="0.1" inputmode="decimal"
-                    placeholder="mm">
+                <div class="input-with-unit">
+                    <input class="field-input" type="number" id="water_min" step="0.1" inputmode="decimal"
+                        placeholder="bar">
+                    <span class="unit">bar</span>
+                </div>
             </div>
             <div class="field">
                 <div class="field-label">
                     <div class="swatch_upper"></div>Övre gräns
                 </div>
-                <input class="field-input" type="number" id="water_max" step="0.1" inputmode="decimal"
-                    placeholder="mm">
+                <div class="input-with-unit">
+                    <input class="field-input" type="number" id="water_max" step="0.1" inputmode="decimal"
+                        placeholder="bar">
+                    <span class="unit">bar</span>
+                </div>
+            </div>
+        </div>
+        <div class="section" id="Bränsletryck">
+            <div class="section-title">Bränsletryck</div>
+            <div class="field">
+                <div class="field-label">
+                    <div class="swatch_lower"></div>Undre gräns
+                </div>
+                <div class="input-with-unit">
+                    <input class="field-input" type="number" id="fuel_min" step="0.1" inputmode="decimal"
+                        placeholder="bar">
+                    <span class="unit">bar</span>
+                </div>
+            </div>
+            <div class="field">
+                <div class="field-label">
+                    <div class="swatch_upper"></div>Övre gräns
+                </div>
+                <div class="input-with-unit">
+                    <input class="field-input" type="number" id="fuel_max" step="0.1" inputmode="decimal"
+                        placeholder="bar">
+                    <span class="unit">bar</span>
+                </div>
             </div>
         </div>
     </div>
     <div class="status_bar" id="status_bar"></div>
     <button class="btn" id="save_settings">Spara</button>
 
-    </div>
     <div class="toast" id="toast">Sparat</div>
     <script src="/settings/settings.js"></script>
 </body>

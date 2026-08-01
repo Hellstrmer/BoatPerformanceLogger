@@ -94,13 +94,33 @@
        letter-spacing: 0;
    }
 
+   .input-with-unit {
+       display: flex;
+       align-items: center;
+       border: 1px solid var(--line, #3a3a42);
+       border-radius: 4px;
+       padding-right: 8px;
+       background-color: var(--bg);
+   }
+
+   .input-with-unit input {
+       border: none;
+       /* ta bort input:ens egen kant */
+       flex: 1;
+       background: transparent;
+   }
+
+   .input-with-unit .unit {
+       color: var(--dim);
+   }
+
    .status_bar {
        margin-top: -4px;
        height: 20px;
        background-color: transparent;
        width: 20rem;
        border: 1px solid var(--border);
-       border-radius: 8px;       
+       border-radius: 8px;
    }
 
 
