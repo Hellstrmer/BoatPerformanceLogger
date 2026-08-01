@@ -141,4 +141,4 @@ def set_config():
 if __name__ == "__main__":
     #Separate threads for UDP and Flask
     threading.Thread(target=udp_listener, daemon=True).start()
-    app.run(host="0.0.0.0", port=5000)
+    app.run(host="0.0.0.0", port=5000, threaded=True)

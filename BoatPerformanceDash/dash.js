@@ -103,38 +103,46 @@ function render(d) {
 
 }
 
-// ---- datakälla: motornoden ----
+let failCount = 0;
 async function poll() {
+  let d;
   try {
-    const r = await fetch('/status', { signal: AbortSignal.timeout(500) });
-    const d = await r.json();
-
-    const stale = checkStale(d);
-    $('stale').classList.toggle('on', stale);
-    $('stale').textContent = "NO SIGNAL TO CONTROLLER";
-
-    render(d);
-
-  } catch {
-    $('stale').classList.toggle('on', Date.now() - lastEspChange > STALE_MS);
-    $('stale').textContent = "SERVER OFFLINE";
+    const r = await fetch('/status', { signal: AbortSignal.timeout(3000) });
+    d = await r.json();
+    failCount = 0;                    // lyckades — nollställ
+  } catch (e) {
+    failCount++;
+    if (failCount >= 3) {
+      $('stale').classList.add('on');
+      $('stale').textContent = "SERVER OFFLINE";
+    }
+    return;
   }
-}
 
+  const stale = checkStale(d);
+  if (stale) {
+    $('stale').classList.add('on');
+    $('stale').textContent = "NO SIGNAL TO CONTROLLER";
+    return;
+  }
+
+  $('stale').classList.remove('on');
+  render(d);
+}
 function checkStale(d) {
-  if (d.ms !== lastEspMs) {        // ny data från ESP
+  if (d.ms === undefined) return true;   // ESP har aldrig skickat
+  if (d.ms !== lastEspMs) {
     lastEspMs = d.ms;
     lastEspChange = Date.now();
   }
-  // om ESP:ns ms inte ändrats på länge är datan frusen
   return Date.now() - lastEspChange > STALE_MS;
 }
 
 
-
 // ---- skala panelen till fönstret för förhandsgranskning ----
 function fit() {
-  const s = Math.min(innerWidth / 1024, innerHeight / 600);
+  //const s = Math.min(innerWidth / 1024, innerHeight / 600);
+  const s = Math.min(innerWidth / 480, innerHeight / 320);
   $('dash').style.transform = 'scale(' + s + ')';
 }
 init();
