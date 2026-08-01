@@ -12,9 +12,13 @@
        --border: #2a2a2a;
        --text: #f0f0f0;
        --muted: #666;
-       --green: #3a9e6a;
-       --yellow: #c9960a;
-       --red: #c0392b;
+       --green: #00974e;
+       --yellow: #e7e302;
+       --red: #ff2b2b;
+       --orange: #ff6200;
+       --line: #3a3a42;
+       --white: #fff;
+       --dim: #9a9aa2;
    }
 
    body {
@@ -119,12 +123,30 @@
        color: var(--muted);
    }
 
+   .section_top {
+       background: var(--surface);
+       border: 1px solid var(--border);
+       border-radius: 8px;
+       padding: 20px 24px;
+       margin-bottom: 12px;
+       margin-top: 10px;
+   }
+
    .section {
        background: var(--surface);
        border: 1px solid var(--border);
        border-radius: 8px;
        padding: 20px 24px;
        margin-bottom: 12px;
+   }
+
+   .section-title_top {
+       font-size: 12px;
+       font-weight: bold;
+       letter-spacing: 2px;
+       text-transform: uppercase;
+       color: var(--muted);
+       margin-bottom: 16px;
    }
 
    .section-title {
@@ -155,6 +177,21 @@
    }
 
    .swatch {
+       background-color: var(--green);
+       width: 8px;
+       height: 8px;
+       border-radius: 50%;
+   }
+
+   .swatch_lower {
+       background-color: var(--yellow);
+       width: 8px;
+       height: 8px;
+       border-radius: 50%;
+   }
+
+   .swatch_upper {
+       background-color: var(--red);
        width: 8px;
        height: 8px;
        border-radius: 50%;
@@ -196,6 +233,23 @@
        cursor: pointer;
        font-family: inherit;
        transition: opacity 0.15s;
+   }
+
+   .btn_setting {
+       width: 100%;
+       padding: 13px;
+       border-radius: 6px;
+       font-size: 11px;
+       font-weight: 600;
+       letter-spacing: 2px;
+       text-transform: uppercase;
+       cursor: pointer;
+       font-family: inherit;
+       transition: opacity 0.15s;
+       margin-top: 10px;
+       background: #1a1a1a;
+       color: #666;
+       border: 1px solid var(--border)
    }
 
    .btn:active {
