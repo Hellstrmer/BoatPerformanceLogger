@@ -57,8 +57,8 @@ def udp_listener():
                 logfile = open(path, "a")
                 print(f"New Session Started: {name}")
 
-            # Logfile
-            buffer.append(build_line(d))
+            # Logfile§
+            buffer.append(build_line(latest))
         except socket.timeout:
             pass # Do nothing for the first time
         except json.JSONDecodeError:
@@ -98,15 +98,15 @@ def build_line(d):
             f"kn={float(d.get('kn',0))},"
             f"waterpressure={float(d.get('waterpressure',0))},"
             f"fuel={float(d.get('fuel',0))},"
+            f"slip={float(d.get('slip',0))},"
             f"overheat={int(d.get('overheat',0))}i,"
-            f"oilLow={int(d.get('oilLow',0))}i",
-            f"oilLow={float(d.get('slip',0))}",
+            f"oilLow={int(d.get('oilLow',0))}i "
             f"{ts}")
 
 def calculate_slip(rpm, kn, pitch, gear):
     if rpm < 400:
         return 0.0
-    theoretical_kn = (rpm * pitch) / gear * 1215
+    theoretical_kn = (rpm * pitch) / (gear * 1215)
     if theoretical_kn <= 0:
         return 0.0
     slip = (1 - kn/ theoretical_kn) * 100

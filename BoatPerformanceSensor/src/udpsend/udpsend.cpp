@@ -9,10 +9,6 @@ WiFiUDP udp;
 
 JsonDocument doc;
 
-
-char buf[256];
-size_t n = serializeJson(doc, buf);
-
 void initUDP()
 {
     WiFi.mode(WIFI_STA);
@@ -62,7 +58,6 @@ void sendSensorDataUDP(float lift, float trim, float rpm, int overheat, int oilL
     doc["kn"] = kn;
     doc["waterpressure"] = waterPressure;
     doc["fuel"] = fuel;
-    doc["slip"] = 0;
     
 
     char buf[256];
