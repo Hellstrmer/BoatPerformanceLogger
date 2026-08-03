@@ -47,6 +47,9 @@ def udp_listener():
             latest["pi_time"] = datetime.now().isoformat(timespec='milliseconds')
             last_packet = time.time()
 
+            # Calculate the slip angle of prop
+            config_values = load_config()
+            latest["slip"] = calculate_slip(latest["rpm"], latest["kn"],config_values["prop_pitch"], config_values["prop_gear"])
             #Open new logfile if None is open
             if logfile is None:                
                 name = datetime.now().strftime("trip_%Y-%m-%d_%H%M%S.influx")
@@ -96,8 +99,20 @@ def build_line(d):
             f"waterpressure={float(d.get('waterpressure',0))},"
             f"fuel={float(d.get('fuel',0))},"
             f"overheat={int(d.get('overheat',0))}i,"
-            f"oilLow={int(d.get('oilLow',0))}i "
+            f"oilLow={int(d.get('oilLow',0))}i",
+            f"oilLow={float(d.get('slip',0))}",
             f"{ts}")
+
+def calculate_slip(rpm, kn, pitch, gear):
+    if rpm < 400:
+        return 0.0
+    theoretical_kn = (rpm * pitch) / gear * 1215
+    if theoretical_kn <= 0:
+        return 0.0
+    slip = (1 - kn/ theoretical_kn) * 100
+    return max(0.0, slip)
+
+
 
 
 # Configure Flask Webserver

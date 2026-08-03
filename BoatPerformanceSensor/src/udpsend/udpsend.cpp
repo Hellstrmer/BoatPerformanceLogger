@@ -62,6 +62,7 @@ void sendSensorDataUDP(float lift, float trim, float rpm, int overheat, int oilL
     doc["kn"] = kn;
     doc["waterpressure"] = waterPressure;
     doc["fuel"] = fuel;
+    doc["slip"] = 0;
     
 
     char buf[256];

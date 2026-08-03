@@ -11,10 +11,7 @@
 // const TRIM_MAX = 25;
 // const LIFT_MAX = 154.2;  // mm
 // const FUEL_MAX = 70;     // l/h vid fullt pådrag
-const SLIP_WARN = 12;     // % — under detta är greppet bra
-const SLIP_BAD = 18;     // % — över detta larmar den
 
-const DEMO = false;   // false när motornoden matar riktig data
 const POLL_MS = 100;
 const STALE_MS = 1000;   // utan svar längre än så: visa INGEN LÄNK
 
@@ -64,7 +61,7 @@ async function getSettings() {
 function render(d) {
   // Visar greppmarkören.
   const hookRpm = rpmFromKn(d.kn);
-  const slip = d.rpm > 400 ? pct((1 - d.kn / knFromRpm(d.rpm)) * 100) : 0;
+  const slip = d.slip;//d.rpm > 400 ? pct((1 - d.kn / knFromRpm(d.rpm)) * 100) : 0;
   const knots = (d.kn);
 
   const aPct = pct(d.rpm / cfg.rpm_max * 100);   // faktiskt varvtal
@@ -77,14 +74,14 @@ function render(d) {
   // gapet visar slip. bara slip färgar det.
   $('wgap').style.left = Math.min(hPct, aPct) + '%';
   $('wgap').style.width = Math.abs(aPct - hPct) + '%';
-  $('wgap').style.background = slip >= SLIP_BAD ? 'var(--red)' : slip < SLIP_WARN ? 'var(--green)' : 'var(--yellow)';
+  $('wgap').style.background = slip >= cfg.slip_bad ? 'var(--red)' : slip < cfg.slip_warn ? 'var(--green)' : 'var(--yellow)';
   $('ghost').style.left = hPct + '%';
 
   $('rpm').textContent = Math.round(d.rpm).toLocaleString('sv-SE');
   $('rpm').className = d.rpm >= cfg.redline ? 'bad' : '';
 
   $('slip').textContent = slip.toFixed(1);
-  $('slip').className = slip >= SLIP_BAD ? 'bad' : slip < SLIP_WARN ? 'ok' : 'warn';
+  $('slip').className = slip >= cfg.slip_bad ? 'bad' : slip < cfg.slip_warn ? 'ok' : 'warn';
 
   $('knots').textContent = knots.toFixed(1);
 

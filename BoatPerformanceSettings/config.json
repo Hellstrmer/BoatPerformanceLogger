@@ -10,5 +10,8 @@
   "water_min": 10,
   "water_max": 1000,
   "fuel_min": 0,
-  "fuel_max": 70
+  "fuel_max": 70,
+  "slip_warn": 12,
+  "slip_bad": 18
+
 }
