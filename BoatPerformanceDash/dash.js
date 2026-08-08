@@ -138,8 +138,8 @@ function checkStale(d) {
 
 // ---- skala panelen till fönstret för förhandsgranskning ----
 function fit() {
-  //const s = Math.min(innerWidth / 1024, innerHeight / 600);
-  const s = Math.min(innerWidth / 480, innerHeight / 320);
+  const s = Math.min(innerWidth / 1024, innerHeight / 600);
+  //const s = Math.min(innerWidth / 480, innerHeight / 320);
   $('dash').style.transform = 'scale(' + s + ')';
 }
 init();
