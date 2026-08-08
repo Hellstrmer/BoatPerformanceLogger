@@ -81,6 +81,13 @@ body {
   color: var(--dim);
   text-transform: uppercase;
 }
+.lab_lower {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: .3em;
+  color: var(--dim);
+  text-transform: uppercase;
+}
 
 /* ---------- RPM: segmenterad kil ---------- */
 .rpmwrap {
@@ -223,14 +230,31 @@ body {
 
 .cell {
   background: var(--black);
-  padding: 10px 10px 9px;
+  padding: 1px 10px 1px;  
   display: flex;
   flex-direction: column;
   justify-content: space-between;
 }
+.cell_lower {  
+  background: var(--black);
+  padding: 1px 10px 1px;  
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 160px;
+}
 
 .num {
   font-size: 80px;
+  font-weight: 800;
+  line-height: .84;
+  letter-spacing: -.03em;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+.num_lower {
+  font-size: 60px;
   font-weight: 800;
   line-height: .84;
   letter-spacing: -.03em;
@@ -248,6 +272,13 @@ body {
 .bar {
   position: relative;
   height: 60px;
+  background: var(--hair);
+  border: 1px solid var(--line);
+  margin-top: 6px;
+}
+.bar_lower {
+  position: relative;
+  height: 40px;
   background: var(--hair);
   border: 1px solid var(--line);
   margin-top: 6px;
