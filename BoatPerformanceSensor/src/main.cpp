@@ -72,7 +72,16 @@ void sendDemoData() {
     float waterPreassure = 10.0 + random(-5, 5) / 10.0;
     float fuel = 8.0 + t * 44.0;
 
-    sendSensorDataUDP(lift, trim, RPMDEMO, overheat, oilLow, kn, waterPreassure, fuel);
+    // IMU
+    // roll: svänger sida till sida, oberoende av fartfasen
+    static float rollPhase = 0.0;
+    rollPhase += 0.03;
+    float roll = sin(rollPhase) * 25.0 + random(-10, 10) / 10.0;
+    
+    // Pithc. nosen upp när farten stiger (följer t), lite brus
+    float pitch = t * 9.0 + random(-8, 8) / 10.0;
+
+    sendSensorDataUDP(lift, trim, RPMDEMO, overheat, oilLow, kn, waterPreassure, fuel, roll, pitch);
 }
 
 void loop()
@@ -90,18 +99,6 @@ void loop()
 
  if (millis() - lastSendInterval > sendInterval) {
     // float lift = encoderGetPositionMM();
-    // // Demo Data
-    // lift = 120;
-    // float trim = 10.0;
-    // float waterPreassure = 10.0;
-    // float fuel = 25.0;
-    // // if (RPMDEMO > 6200.0)
-    // // {
-    // //   RPMDEMO = 2000.0;
-    // // }
-    // // RPMDEMO += 30.0;
-    // RPMDEMO = 6000.0;
-    // kn = (RPMDEMO / 100 - 2);
     // sendSensorDataUDP(lift, trim, RPMDEMO, overheat, oilLow, kn, waterPreassure, fuel);    
     sendDemoData();
 
