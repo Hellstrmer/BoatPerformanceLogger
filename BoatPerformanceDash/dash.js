@@ -94,10 +94,14 @@ function render(d) {
   $('fuel').textContent = Math.round(d.fuel);
   $('fuelBar').style.width = pct(d.fuel / cfg.fuel_max * 100) + '%';
 
+  $('tankFill').style.height = pct(50) + '%';//pct(d.tank_level) + '%';
+  $('tankLevel').textContent = 100;//Math.round(d.tank_level);
+
 
   $('Alarm').classList.toggle('on', d.overheat || d.oilLow);
   $('Alarm').textContent = d.overheat ? "ENGINE OVERHEAT" : d.oilLow ? "OIL PRESSURE LOW" : "";
 
+  
   renderIMU(d);
 }
 
@@ -122,19 +126,19 @@ async function poll() {
     failCount = 0;                    // lyckades — nollställ
   } catch (e) {
     failCount++;
-    if (failCount >= 3) {
-      $('stale').classList.add('on');
-      $('stale').textContent = "SERVER OFFLINE";
-    }
+    // if (failCount >= 3) {
+    //   $('stale').classList.add('on');
+    //   $('stale').textContent = "SERVER OFFLINE";
+    // }
     return;
   }
 
-  const stale = checkStale(d);
-  if (stale) {
-    $('stale').classList.add('on');
-    $('stale').textContent = "NO SIGNAL TO CONTROLLER";
-    return;
-  }
+  // const stale = checkStale(d);
+  // if (stale) {
+  //   $('stale').classList.add('on');
+  //   $('stale').textContent = "NO SIGNAL TO CONTROLLER";
+  //   return;
+  // }
 
   $('stale').classList.remove('on');
   render(d);

@@ -50,11 +50,64 @@ body {
   background: var(--black);
   color: var(--white);
   display: flex;
-  flex-direction: column;
-  gap: 12px;
+  flex-direction: row;
+  
   padding: 14px 20px 16px;
   transform-origin: center;
   position: relative;
+}
+
+.dash-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;   /* ditt gamla #dash-beteende flyttar hit */
+  
+  min-width: 0;             /* hindrar att innehållet spränger bredden */
+}
+
+.tank {
+  width: 50px;
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  background: var(--black);
+  border: 1px solid var(--line);
+  padding: 8px 6px;
+}
+
+.tank-lab {
+  font-size: 14px;
+  letter-spacing: .2em;
+  color: var(--dim);
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 6px;
+}
+
+.tank-tube {
+  flex: 1;                  /* tar all höjd mellan etikett och siffra */
+  background: var(--hair);
+  border: 1px solid var(--line);
+  position: relative;
+  overflow: hidden;
+}
+
+.tank-fill {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;               /* fylls NERIFRÅN */
+  height: 0;
+  background: var(--white);
+  transition: height .3s linear;
+}
+
+.tank-num {
+  text-align: center;
+  margin-top: 6px;
+  font-size: 18px;
+  font-weight: 800;
+  line-height: 1;
 }
 
 #Alarm {
@@ -92,7 +145,7 @@ body {
 /* ---------- RPM: segmenterad kil ---------- */
 .rpmwrap {
   position: relative;
-  height: 104px;
+  height: 100px;
   flex: none
 }
 
@@ -188,7 +241,8 @@ body {
   display: grid;
   grid-template-columns: 1.45fr 1fr 1fr;
   gap: 20px;
-  flex: none
+  flex: none;
+  margin-bottom: 5px
 }
 
 .box {
@@ -239,9 +293,15 @@ body {
   flex: 1;
 }
 
+.row-bottom .bar {
+  height: 40px;
+}
 .tilt-cell {
   align-items: center;
   justify-content: center;
+}
+.row-bottom .lab {
+  font-size: 20px;
 }
 
 .row {
@@ -296,7 +356,7 @@ body {
 
 .bar {
   position: relative;
-  height: 60px;
+  height: 50px;
   background: var(--hair);
   border: 1px solid var(--line);
   margin-top: 6px;
