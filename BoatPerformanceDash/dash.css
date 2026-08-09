@@ -81,7 +81,7 @@ body {
   color: var(--dim);
   text-transform: uppercase;
 }
-.lab_lower {
+.lab_upper {
   font-size: 20px;
   font-weight: 700;
   letter-spacing: .3em;
@@ -219,6 +219,31 @@ body {
 }
 
 /* ---------- botten: tre stapelmätare ---------- */
+
+.row-top {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background: var(--line);
+  border: 1px solid var(--line);
+  flex: none;
+  height: 190px;
+}
+
+.row-bottom {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 1px;
+  background: var(--line);
+  border: 1px solid var(--line);
+  flex: 1;
+}
+
+.tilt-cell {
+  align-items: center;
+  justify-content: center;
+}
+
 .row {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
@@ -235,7 +260,7 @@ body {
   flex-direction: column;
   justify-content: space-between;
 }
-.cell_lower {  
+.cell_upper {  
   background: var(--black);
   padding: 1px 10px 1px;  
   display: flex;
@@ -253,7 +278,7 @@ body {
   align-items: baseline;
   gap: 8px;
 }
-.num_lower {
+.num_upper {
   font-size: 60px;
   font-weight: 800;
   line-height: .84;
@@ -276,7 +301,7 @@ body {
   border: 1px solid var(--line);
   margin-top: 6px;
 }
-.bar_lower {
+.bar_upper {
   position: relative;
   height: 40px;
   background: var(--hair);
@@ -290,6 +315,12 @@ body {
   width: 0;
   background: var(--orange);
   transition: width .12s linear;
+}
+.tilt-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
 }
 
 .bar::after {

@@ -98,6 +98,19 @@ function render(d) {
   $('Alarm').classList.toggle('on', d.overheat || d.oilLow);
   $('Alarm').textContent = d.overheat ? "ENGINE OVERHEAT" : d.oilLow ? "OIL PRESSURE LOW" : "";
 
+  renderIMU(d);
+}
+
+const renderIMU = (d) => {
+  const MAXDEG = 40, TR = 95;
+  const tx = 120 + (d.roll / MAXDEG) * TR;
+  const ty = 120 + (d.pitch / MAXDEG) * TR;
+  $('tiltDot').setAttribute('cx', tx);
+  $('tiltDot').setAttribute('cy', ty);
+  $('cross-h').setAttribute('y1', ty); $('cross-h').setAttribute('y2', ty);
+  $('cross-h').setAttribute('x1', tx - 60); $('cross-h').setAttribute('x2', tx + 60);
+  $('cross-v').setAttribute('x1', tx); $('cross-v').setAttribute('x2', tx);
+  $('cross-v').setAttribute('y1', ty - 60); $('cross-v').setAttribute('y2', ty + 60);
 }
 
 let failCount = 0;

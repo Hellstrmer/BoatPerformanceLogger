@@ -42,20 +42,93 @@
     </div>
 
     <!-- Vad du justerar -->
+
+    <div class="row-top">
+  <div class="cell">
+    <div class="lab">Hiss</div>
+    <div class="num"><span id="lift">0</span><span class="u">MM</span></div>
+    <div class="bar"><div class="bfill" id="liftBar"></div></div>
+    <div class="scale"><span>0</span><span>77</span><span>154</span></div>
+  </div>
+  <div class="cell tilt-cell">
+    <svg id="tilt" viewBox="0 0 240 240" width="200" height="200">
+      <circle cx="120" cy="120" r="110" fill="#0e0e10" stroke="#2a2a30" stroke-width="2"/>
+      <circle cx="120" cy="120" r="73" fill="none" stroke="#2a2a30" stroke-width="1"/>
+      <circle cx="120" cy="120" r="37" fill="none" stroke="#2a2a30" stroke-width="1"/>
+      <line id="cross-h" x1="60" y1="120" x2="180" y2="120" stroke="#44444d" stroke-width="1"/>
+      <line id="cross-v" x1="120" y1="60" x2="120" y2="180" stroke="#44444d" stroke-width="1"/>
+      <circle id="tiltDot" cx="120" cy="120" r="11" fill="var(--orange)"/>
+    </svg>
+  </div>
+</div>
+
+<div class="row-bottom">
+  <div class="cell">
+    <div class="lab">Trim</div>
+    <div class="num"><span id="trim">0</span><span class="u">°</span></div>
+    <div class="bar"><div class="bfill" id="trimBar"></div></div>
+    <div class="scale"><span>-5</span><span>10</span><span>25</span></div>
+  </div>
+  <div class="cell">
+    <div class="lab">Vatten</div>
+    <div class="num"><span id="waterpressure">0.0</span><span class="u">BAR</span></div>
+    <div class="bar"><div class="bfill" id="waterBar"></div></div>
+    <div class="scale"><span>0</span><span>1.5</span><span>3</span></div>
+  </div>
+  <div class="cell">
+    <div class="lab">Bränsle</div>
+    <div class="num"><span id="fuel">0</span><span class="u">L/H</span></div>
+    <div class="bar"><div class="bfill" id="fuelBar"></div></div>
+    <div class="scale"><span>0</span><span>35</span><span>70</span></div>
+  </div>
+</div>
+<!-- 
     <div class="row">
-      <div class="cell">
-        <div class="lab">Hiss</div>
-        <div class="num"><span id="lift">0</span><span class="u">MM</span></div>
+      <div class="cell_upper">
+        <div class="lab_upper">Hiss</div>
+        <div class="num_upper"><span id="lift">0</span><span class="u">MM</span></div>
         <div>
-          <div class="bar">
+          <div class="bar_upper">
             <div class="bfill" id="liftBar"></div>
           </div>
           <div class="scale"><span>0</span><span>77</span><span>154</span></div>
         </div>
       </div>
+      <div class="cell_upper">
+        <div class="lab_upper">Test</div>
+        <div class="num_upper"><span id="lift">0</span><span class="u">MM</span></div>
+        <div>
+          <div class="bar_upper">
+            <div class="bfill" id="liftBar"></div>
+          </div>
+          <div class="scale"><span>0</span><span>77</span><span>154</span></div>
+        </div>
+      </div>
+      <div class="cell_upper">
+        <div class="tilt-wrap">
+          <svg id="tilt" viewBox="0 0 240 240" width="150" height="150">
+            <circle cx="120" cy="120" r="110" fill="#0e0e10" stroke="#2a2a30" stroke-width="2" />
+            <circle cx="120" cy="120" r="73" fill="none" stroke="#2a2a30" stroke-width="1" />
+            <circle cx="120" cy="120" r="37" fill="none" stroke="#2a2a30" stroke-width="1" />
+            <line id="cross-h" x1="60" y1="120" x2="180" y2="120" stroke="#44444d" stroke-width="1" />
+            <line id="cross-v" x1="120" y1="60" x2="120" y2="180" stroke="#44444d" stroke-width="1" />
+            <circle id="tiltDot" cx="120" cy="120" r="11" fill="var(--orange)" />
+          </svg>
+        </div>
+      </div>
       <div class="cell">
         <div class="lab">Trim</div>
-        <div class="num"><span id="trim">0.0</span><span class="u">°</span></div>
+        <div class="num"><span id="trim">0</span><span class="u">°</span></div>
+        <div>
+          <div class="bar">
+            <div class="bfill" id="trimBar"></div>
+          </div>
+          <div class="scale"><span>-5</span><span>10</span><span>25</span></div>
+        </div>
+      </div>
+      <div class="cell">
+        <div class="lab">Vattentryck</div>
+        <div class="num"><span id="waterpressure">0.0</span><span class="u">°</span></div>
         <div>
           <div class="bar">
             <div class="bfill" id="trimBar"></div>
@@ -73,41 +146,7 @@
           </div>
           <div class="scale"><span>0</span><span>35</span><span>70</span></div>
         </div>
-      </div>
-      <div class="cell_lower">
-        <div class="lab_lower">Test</div>
-        <div class="num_lower"><span id="lift">0</span><span class="u">MM</span></div>
-        <div>
-          <div class="bar_lower">
-            <div class="bfill" id="liftBar"></div>
-          </div>
-          <div class="scale"><span>0</span><span>77</span><span>154</span></div>
-        </div>
-      </div>
-      <div class="cell_lower">
-        <div class="lab_lower">Test</div>
-        <div class="num_lower"><span id="lift">0</span><span class="u">MM</span></div>
-        <div>
-          <div class="bar_lower">
-            <div class="bfill" id="liftBar"></div>
-          </div>
-          <div class="scale"><span>0</span><span>77</span><span>154</span></div>
-        </div>
-      </div>
-
-      <div class="cell_lower">
-        <div class="tilt-wrap">
-          <svg id="tilt" viewBox="0 0 400 400">
-            <circle cx="120" cy="120" r="110" fill="#0e0e10" stroke="#2a2a30" stroke-width="2" />
-            <circle cx="120" cy="120" r="73" fill="none" stroke="#2a2a30" stroke-width="1" />
-            <circle cx="120" cy="120" r="37" fill="none" stroke="#2a2a30" stroke-width="1" />
-            <line id="cross-h" x1="60" y1="120" x2="180" y2="120" stroke="#44444d" stroke-width="1" />
-            <line id="cross-v" x1="120" y1="60" x2="120" y2="180" stroke="#44444d" stroke-width="1" />
-            <circle id="tiltDot" cx="120" cy="120" r="11" fill="var(--white)" />
-          </svg>
-        </div>
-      </div>
-
+      </div> -->
 
       <div id="Alarm"></div>
       <div id="stale">NO SIGNAL TO CONTROLLER</div>
