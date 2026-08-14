@@ -4,8 +4,9 @@
 //#include "espnow/espnow.h"
 #include "prefs/prefs.h"
 //#include "rpm/rpm.h"
-#include "alarm/alarm.h"
+//#include "alarm/alarm.h"
 #include "udpsend/udpsend.h"
+#include "gps/gps.h"
 
 unsigned long sendInterval = 50; //20HZ
 unsigned long meassureInterval = 100; // 10HZ
@@ -22,9 +23,10 @@ void setup()
   //initEncoder();
   //initESPNow();
   delay(500);
-  initUDP();
+  //initUDP();
   //initRPM();
-  initAlarms();
+  //initAlarms();
+  initGPS();
   delay(100);
 }
 // *********************** DEMO ********************************
@@ -80,7 +82,8 @@ void sendDemoData() {
     
     // Pithc. nosen upp när farten stiger (följer t), lite brus
     float pitch = t * 9.0 + random(-8, 8) / 10.0;
-
+    bool overheat;
+    bool oilLow;
     sendSensorDataUDP(lift, trim, RPMDEMO, overheat, oilLow, kn, waterPreassure, fuel, roll, pitch);
 }
 
@@ -93,14 +96,16 @@ void loop()
   
  if (millis() - lastReadInterval > meassureInterval) {
     //RPM = readRPM();
-    readAlarms();
+    //readAlarms();
     lastReadInterval = millis();
 }
 
  if (millis() - lastSendInterval > sendInterval) {
     // float lift = encoderGetPositionMM();
     // sendSensorDataUDP(lift, trim, RPMDEMO, overheat, oilLow, kn, waterPreassure, fuel);    
-    sendDemoData();
+    //sendDemoData();
+
+    checkLocation();
 
     lastSendInterval = millis();
 }
