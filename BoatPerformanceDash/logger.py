@@ -99,6 +99,11 @@ def build_line(d):
             f"waterpressure={float(d.get('waterpressure',0))},"
             f"fuel={float(d.get('fuel',0))},"
             f"slip={float(d.get('slip',0))},"
+            f"roll={float(d.get('roll',0))},"
+            f"pitch={float(d.get('pitch',0))},"
+            f"satellites={int(d.get('satellites',0))}i,"
+            f"lat={float(d.get('lat',0))},"
+            f"lng={float(d.get('lng',0))},"
             f"overheat={int(d.get('overheat',0))}i,"
             f"oilLow={int(d.get('oilLow',0))}i "
             f"{ts}")
