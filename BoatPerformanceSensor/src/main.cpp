@@ -27,7 +27,8 @@ void setup()
   //initRPM();
   //initAlarms();
   initGPS();
-  delay(100);
+  Serial.println("Started!");
+  delay(1000);
 }
 // *********************** DEMO ********************************
 void sendDemoData() {
@@ -84,7 +85,9 @@ void sendDemoData() {
     float pitch = t * 9.0 + random(-8, 8) / 10.0;
     bool overheat;
     bool oilLow;
-    sendSensorDataUDP(lift, trim, RPMDEMO, overheat, oilLow, kn, waterPreassure, fuel, roll, pitch);
+    gpsUpdate();
+    uint32_t gpsSatellies = getGPSsatellites();
+    sendSensorDataUDP(lift, trim, RPMDEMO, overheat, oilLow, kn, waterPreassure, fuel, roll, pitch, gpsLat, gpsLng, gpsSatellies);
 }
 
 void loop()

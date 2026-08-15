@@ -45,7 +45,7 @@ static void CheckConnection()
         }        
 }
 
-void sendSensorDataUDP(float lift, float trim, float rpm, int overheat, int oilLow, float kn, float waterPressure, float fuel, float roll, float pitch)
+void sendSensorDataUDP(float lift, float trim, float rpm, int overheat, int oilLow, float kn, float waterPressure, float fuel, float roll, float pitch, uint32_t satellites, double lat, double lng)
 {
     CheckConnection();
     // Convert to JSON
@@ -60,6 +60,9 @@ void sendSensorDataUDP(float lift, float trim, float rpm, int overheat, int oilL
     doc["fuel"] = fuel;
     doc["roll"] = roll;
     doc["pitch"] = pitch;
+    doc["satellites"] = satellites;
+    doc["lat"] = lat;
+    doc["lng"] = lng;
     
 
     char buf[256];

@@ -25,13 +25,13 @@ void checkLocation()
     delay(1000);
 }
 
-void gpsUpdate()
-{
-    while (gpsSerial.available())
-    {
-        gps.encode(gpsSerial.read());
-    }
-}
+// void gpsUpdate()
+// {
+//     while (gpsSerial.available())
+//     {
+//         gps.encode(gpsSerial.read());
+//     }
+// }
 
 float gpsSpeed()
 {
@@ -43,13 +43,17 @@ float gpsSpeed()
     return 0.0;
 }
 
-double gpsLocation()
-{
-    if (gps.location.isValid())
-    {
-        double lat = gps.location.lat();
-        double lng = gps.location.lng();
-        return lat, lng;
+double gpsLat = 0.0, gpsLng = 0.0;
+bool gpsValid = false;
+
+void gpsUpdate() {
+    while (gpsSerial.available()) gps.encode(gpsSerial.read());
+    if (gps.location.isValid()) {
+        gpsLat = gps.location.lat();
+        gpsLng = gps.location.lng();
+        gpsValid = true;
     }
-    return 0.0, 0.0;
+}
+uint32_t getGPSsatellites() {
+    return gps.satellites.value();
 }
