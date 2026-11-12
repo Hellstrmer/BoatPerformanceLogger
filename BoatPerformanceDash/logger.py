@@ -3,6 +3,7 @@ import threading
 import json
 import time
 import os
+import glob
 
 from datetime import datetime
 from flask import Flask, jsonify, send_from_directory, request
@@ -37,6 +38,8 @@ def udp_listener():
     last_packet = time.time()
 
     SESSION_TIMEOUT = 30 # Session finished when no data arrives for this time
+
+    recover_from_logs()
 
     while True:
         try: 
@@ -117,6 +120,13 @@ def calculate_slip(rpm, kn, pitch, gear):
     slip = (1 - kn/ theoretical_kn) * 100
     return max(0.0, slip)
 
+def recover_from_logs():
+    f = glob.glob(os.path.join(LOG_DIR, "*.influx"))
+    for path in f:
+        name = os.path.basename(path)
+        dest = os.path.join(PENDING_DIR, name)
+        os.replace(path, dest)
+        print(f"Recovered file in logs folder: {name}")
 
 
 

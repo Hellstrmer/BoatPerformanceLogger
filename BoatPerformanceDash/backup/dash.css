@@ -1,0 +1,1012 @@
+/* ============================================================
+   Hydrolift T18 — instrumentpanel
+   Ritad i 1280x720 (16:9) och skalas till skärmen av fit().
+   Tre vyer (A, B, C) som man swipar mellan.
+   Färgspråk:
+     vit    = mätvärde
+     orange = staplar i vy A/B
+     gul    = slip i varningsområdet
+     röd    = redline, larm eller värde utanför sitt område
+     grön   = bra grepp / GPS-fix
+   ============================================================ */
+
+@font-face {
+  font-family: 'Saira Condensed';
+  font-weight: 600;
+  src: url(fonts/saira-condensed-latin-600-normal.woff2) format('woff2');
+}
+
+@font-face {
+  font-family: 'Saira Condensed';
+  font-weight: 700;
+  src: url(fonts/saira-condensed-latin-700-normal.woff2) format('woff2');
+}
+
+@font-face {
+  font-family: 'Saira Condensed';
+  font-weight: 800;
+  src: url(fonts/saira-condensed-latin-800-normal.woff2) format('woff2');
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0
+}
+
+:root {
+  --black: #000;
+  --hair: #131316;
+  --line: #3a3a42;
+  --frame: #2a2a30;
+  --white: #fff;
+  --dim: #9a9aa2;
+  --dim2: #b5b5bd;
+  --off: #1d1d22;
+  --orange: #ff6200;
+  --red: #ff2b2b;
+  --green: #00974e;
+  --yellow: #e7e302;
+  --seg: 8px;
+  --gapw: 2px;
+}
+
+html {
+  background: #000;
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  background: #000;
+  width: 100%;
+  height: 100%;
+  font-family: 'Saira Condensed', 'Arial Narrow', system-ui, sans-serif;
+  font-variant-numeric: tabular-nums;
+  -webkit-font-smoothing: antialiased;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  color: var(--white);
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: none;
+  cursor: none;
+}
+
+#dash {
+  width: 1280px;
+  height: 720px;
+  flex: none;
+  background: var(--black);
+  position: relative;
+  overflow: hidden;
+  transform-origin: center;
+}
+
+#pages {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  transition: transform .28s ease-out;
+}
+
+.page {
+  flex: none;
+  width: 1280px;
+  height: 720px;
+  position: relative;
+}
+
+/* ---------- gemensamt ---------- */
+.lab {
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: .3em;
+  color: var(--dim);
+  text-transform: uppercase;
+}
+
+.u {
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--dim);
+  letter-spacing: .04em
+}
+
+.row-sb {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.sub {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--dim)
+}
+
+.sub b {
+  color: var(--white);
+  font-size: 30px
+}
+
+.warn,
+.warn>span:first-child {
+  color: var(--yellow)
+}
+
+.bad,
+.bad>span:first-child {
+  color: var(--red)
+}
+
+.ok,
+.ok>span:first-child {
+  color: var(--green)
+}
+
+/* RPM-kilen */
+.rpmwrap {
+  position: relative;
+  flex: none
+}
+
+.rpmwrap .logo {
+  position: absolute;
+  left: 10px;
+  top: 4px;
+  width: 110px;
+  z-index: 7;
+}
+
+.wedge {
+  position: absolute;
+  inset: 0;
+  clip-path: polygon(0 58%, 100% 0, 100% 100%, 0 100%);
+  background: var(--hair)
+}
+
+.wfill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 0;
+  background: var(--white);
+  transition: width .08s linear;
+  z-index: 1
+}
+
+.wgap {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  background: var(--yellow);
+  transition: left .08s linear, width .08s linear, background .15s linear;
+  z-index: 3
+}
+
+.wzone {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  background: rgba(255, 43, 43, .26);
+  z-index: 2
+}
+
+.segmask {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 4;
+  background: repeating-linear-gradient(90deg, transparent 0 var(--seg), #000 var(--seg) calc(var(--seg) + var(--gapw)))
+}
+
+.ghost {
+  position: absolute;
+  top: -3px;
+  bottom: -3px;
+  width: 3px;
+  margin-left: -1px;
+  background: var(--white);
+  left: 0;
+  transition: left .08s linear;
+  z-index: 5
+}
+
+.ghost::before {
+  content: '';
+  position: absolute;
+  bottom: 100%;
+  left: -5px;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-bottom: 7px solid var(--white)
+}
+
+.rpmlab {
+  position: absolute;
+  right: 6px;
+  top: 3px;
+  z-index: 6;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: .3em;
+  color: var(--dim)
+}
+
+/* segmenterade staplar (vy A/B) */
+.bar {
+  position: relative;
+  background: var(--hair);
+  border: 1px solid var(--line)
+}
+
+.bfill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 0;
+  background: var(--orange);
+  transition: width .12s linear, height .12s linear
+}
+
+.bfill.white {
+  background: var(--white)
+}
+
+.bar::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(90deg, transparent 0 var(--seg), #000 var(--seg) calc(var(--seg) + var(--gapw)))
+}
+
+.vbar {
+  position: relative;
+  background: var(--hair);
+  border: 1px solid var(--line)
+}
+
+.vbar .bfill {
+  inset: auto 0 0 0;
+  width: auto;
+  height: 0
+}
+
+.vbar::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(0deg, transparent 0 var(--seg), #000 var(--seg) calc(var(--seg) + var(--gapw)))
+}
+
+.cell.bad .bfill {
+  background: var(--red)
+}
+
+.scale {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 5px;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: .05em;
+  color: var(--dim)
+}
+
+/* tank (vy A/B) */
+.tank {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--line);
+  padding: 8px 6px
+}
+
+.tank-lab {
+  font-size: 15px;
+  letter-spacing: .2em;
+  color: var(--dim);
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 6px
+}
+
+.tank-tube {
+  flex: 1;
+  background: var(--hair);
+  border: 1px solid var(--line);
+  position: relative;
+  overflow: hidden
+}
+
+.tank-fill {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 0;
+  background: var(--white);
+  transition: height .3s linear
+}
+
+.tank.warn .tank-fill {
+  background: var(--yellow)
+}
+
+.tank.bad .tank-fill {
+  background: var(--red)
+}
+
+.tank-num {
+  text-align: center;
+  margin-top: 6px;
+  font-size: 22px;
+  font-weight: 800
+}
+
+.tank-num .u {
+  font-size: 16px
+}
+
+/* GPS */
+.gps {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 18px;
+  color: var(--dim);
+  font-weight: 700
+}
+
+.gpsDot {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--dim);
+  transition: background .3s
+}
+
+.gpsDot.fix {
+  background: var(--green)
+}
+
+/* ===================== VY A ===================== */
+.pA {
+  display: flex;
+  gap: 16px;
+  padding: 16px 22px 18px
+}
+
+.pA .main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0
+}
+
+.pA .rpmwrap {
+  height: 118px
+}
+
+.pA .hero {
+  display: grid;
+  grid-template-columns: 1.45fr 1fr 1fr;
+  gap: 22px;
+  margin: 14px 0 10px
+}
+
+.pA .big {
+  font-size: 124px;
+  font-weight: 800;
+  line-height: .78;
+  letter-spacing: -.035em;
+  display: flex;
+  align-items: baseline;
+  gap: 10px
+}
+
+.pA .big .u {
+  font-size: 32px
+}
+
+.pA .grid {
+  display: grid;
+  gap: 1px;
+  background: var(--line);
+  border: 1px solid var(--line)
+}
+
+.pA .r1 {
+  grid-template-columns: 1fr 1fr;
+  height: 196px;
+  margin-bottom: -1px
+}
+
+.pA .r2 {
+  grid-template-columns: 1fr 1fr 1fr;
+  flex: 1
+}
+
+.pA .cell {
+  background: var(--black);
+  padding: 4px 12px 6px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between
+}
+
+.pA .num {
+  font-size: 88px;
+  font-weight: 800;
+  line-height: .84;
+  letter-spacing: -.03em;
+  display: flex;
+  align-items: baseline;
+  gap: 8px
+}
+
+.pA .r2 .num {
+  font-size: 66px
+}
+
+.pA .r2 .lab {
+  font-size: 20px
+}
+
+.pA .r1 .bar {
+  height: 52px
+}
+
+.pA .r2 .bar {
+  height: 34px
+}
+
+.pA .tilt-cell {
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between
+}
+
+.pA .side {
+  width: 84px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px
+}
+
+.pA .side .tank {
+  flex: 1
+}
+
+.pA .batt {
+  border: 1px solid var(--line);
+  padding: 6px 4px;
+  text-align: center
+}
+
+.pA .batt .n {
+  font-size: 30px;
+  font-weight: 800;
+  line-height: 1
+}
+
+.pA .batt .l {
+  font-size: 14px;
+  letter-spacing: .2em;
+  color: var(--dim);
+  font-weight: 700
+}
+
+.pA .batt.bad .n {
+  color: var(--red)
+}
+
+.pA .batt.warn .n {
+  color: var(--yellow)
+}
+
+/* ===================== VY B ===================== */
+.pB {
+  display: grid;
+  grid-template-rows: 104px 1fr;
+  gap: 14px;
+  padding: 16px 22px 18px
+}
+
+.pB .rpmwrap {
+  height: 104px
+}
+
+.pB .body {
+  display: grid;
+  grid-template-columns: 250px 1fr 300px 70px;
+  gap: 14px;
+  min-height: 0
+}
+
+.pB .adj {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px
+}
+
+.pB .vg {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--line);
+  padding: 8px 10px
+}
+
+.pB .vg .lab {
+  font-size: 18px
+}
+
+.pB .vg .n {
+  font-size: 58px;
+  font-weight: 800;
+  line-height: .9;
+  letter-spacing: -.03em
+}
+
+.pB .vg .n .u {
+  font-size: 20px
+}
+
+.pB .vg .vbar {
+  flex: 1;
+  margin-top: 8px
+}
+
+.pB .center {
+  display: flex;
+  flex-direction: column;
+  min-width: 0
+}
+
+.pB .kn {
+  font-size: 250px;
+  font-weight: 800;
+  line-height: .78;
+  letter-spacing: -.04em;
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin-top: 6px
+}
+
+.pB .kn .u {
+  font-size: 40px
+}
+
+.pB .pair {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr;
+  gap: 20px;
+  margin-top: 26px
+}
+
+.pB .mid {
+  font-size: 96px;
+  font-weight: 800;
+  line-height: .8;
+  letter-spacing: -.03em;
+  display: flex;
+  align-items: baseline;
+  gap: 8px
+}
+
+.pB .mid .u {
+  font-size: 28px
+}
+
+.pB .foot {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  gap: 22px
+}
+
+.pB .foot .t {
+  font-size: 18px;
+  color: var(--dim);
+  font-weight: 700;
+  letter-spacing: .15em;
+  line-height: 1.5
+}
+
+.pB .foot .t b {
+  color: var(--white);
+  font-size: 24px
+}
+
+.pB .foot .gps {
+  margin-left: auto
+}
+
+.pB .right {
+  display: grid;
+  grid-template-rows: 1.3fr 1fr 1fr;
+  gap: 1px;
+  background: var(--line);
+  border: 1px solid var(--line)
+}
+
+.pB .cell {
+  background: var(--black);
+  padding: 4px 12px 6px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between
+}
+
+.pB .cell .lab {
+  font-size: 18px
+}
+
+.pB .num {
+  font-size: 60px;
+  font-weight: 800;
+  line-height: .84;
+  letter-spacing: -.03em;
+  display: flex;
+  align-items: baseline;
+  gap: 8px
+}
+
+.pB .num .u {
+  font-size: 20px
+}
+
+.pB .cell .bar {
+  height: 28px
+}
+
+/* ===================== VY C: hög läsbarhet ===================== */
+.pC {
+  display: grid;
+  grid-template-rows: 96px 1fr;
+  gap: 14px;
+  padding: 14px 20px 16px
+}
+
+.pC .rpmwrap {
+  height: 96px
+}
+
+.pC .segmask {
+  background: repeating-linear-gradient(90deg, transparent 0 22px, #000 22px 28px)
+}
+
+.pC .ghost {
+  width: 5px;
+  margin-left: -2px
+}
+
+.pC .lab {
+  font-size: 22px;
+  letter-spacing: .2em;
+  color: var(--dim2)
+}
+
+.pC .u {
+  color: var(--dim2)
+}
+
+.pC .body {
+  display: grid;
+  grid-template-columns: 250px 1fr 330px 74px;
+  gap: 16px;
+  min-height: 0
+}
+
+.pC .adj {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px
+}
+
+.pC .vg {
+  display: flex;
+  flex-direction: column;
+  border: 2px solid var(--frame);
+  padding: 8px 10px
+}
+
+.pC .vg .n {
+  font-size: 64px;
+  font-weight: 800;
+  line-height: .9;
+  letter-spacing: -.03em;
+  margin: 4px 0 10px
+}
+
+.pC .vg .n .u {
+  font-size: 22px
+}
+
+.pC .center {
+  display: flex;
+  flex-direction: column;
+  min-width: 0
+}
+
+.pC .kn {
+  font-size: 270px;
+  font-weight: 800;
+  line-height: .76;
+  letter-spacing: -.045em;
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin-top: 8px
+}
+
+.pC .kn .u {
+  font-size: 44px
+}
+
+.pC .pair {
+  display: grid;
+  grid-template-columns: 1.25fr 1fr;
+  gap: 18px;
+  margin-top: 34px
+}
+
+.pC .mid {
+  font-size: 112px;
+  font-weight: 800;
+  line-height: .8;
+  letter-spacing: -.035em;
+  display: flex;
+  align-items: baseline;
+  gap: 8px
+}
+
+.pC .mid .u {
+  font-size: 30px
+}
+
+/* slip som färgad ruta: färgen fyller rutan, texten blir svart */
+.pC .slipbox {
+  background: var(--off);
+  padding: 10px 14px 6px;
+  border-radius: 4px;
+  transition: background .15s linear
+}
+
+.pC .slipbox.ok {
+  background: var(--green)
+}
+
+.pC .slipbox.warn {
+  background: var(--yellow)
+}
+
+.pC .slipbox.bad {
+  background: var(--red)
+}
+
+.pC .slipbox.ok>span,
+.pC .slipbox.warn>span,
+.pC .slipbox.bad>span {
+  color: #000
+}
+
+.pC .foot {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--dim2);
+  letter-spacing: .12em
+}
+
+.pC .foot .gpsDot {
+  width: 22px;
+  height: 22px
+}
+
+.pC .right {
+  display: grid;
+  grid-template-rows: 1fr 1fr 1fr;
+  gap: 12px
+}
+
+.pC .cell {
+  border: 2px solid var(--frame);
+  padding: 6px 12px 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between
+}
+
+.pC .num {
+  font-size: 78px;
+  font-weight: 800;
+  line-height: .82;
+  letter-spacing: -.03em;
+  display: flex;
+  align-items: baseline;
+  gap: 8px
+}
+
+.pC .num .u {
+  font-size: 24px
+}
+
+.pC .sub b {
+  font-size: 34px
+}
+
+.pC .cell.warn {
+  border-color: var(--yellow)
+}
+
+.pC .cell.bad {
+  border-color: var(--red);
+  background: #2a0000
+}
+
+.pC .cell.warn .lab {
+  color: var(--yellow)
+}
+
+.pC .cell.bad .lab {
+  color: var(--red)
+}
+
+.pC .num span:first-child {
+  color: inherit
+}
+
+.pC .cell.warn .num span:first-child {
+  color: var(--yellow)
+}
+
+.pC .cell.bad .num span:first-child {
+  color: var(--red)
+}
+
+.pC .tank {
+  border: 2px solid var(--frame);
+  padding: 8px
+}
+
+.pC .tank-lab {
+  font-size: 16px;
+  color: var(--dim2)
+}
+
+.pC .tank-num {
+  font-size: 28px
+}
+
+.pC .tank.warn {
+  border-color: var(--yellow)
+}
+
+.pC .tank.bad {
+  border-color: var(--red)
+}
+
+/* grova block (vy C) */
+.blk {
+  display: flex;
+  gap: 6px
+}
+
+.blk.h {
+  height: 34px
+}
+
+.blk.v {
+  flex: 1;
+  flex-direction: column-reverse
+}
+
+.blk i {
+  flex: 1;
+  display: block;
+  background: var(--off)
+}
+
+.blk i.on {
+  background: var(--white)
+}
+
+.warn .blk i.on {
+  background: var(--yellow)
+}
+
+.bad .blk i.on {
+  background: var(--red)
+}
+
+/* ---------- vyindikator ---------- */
+#dots {
+  position: absolute;
+  left: 50%;
+  bottom: 12px;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 10px;
+  z-index: 20;
+  opacity: 0;
+  transition: opacity .3s;
+  pointer-events: none;
+  background: rgba(0, 0, 0, .75);
+  padding: 8px 14px;
+  border-radius: 20px
+}
+
+#dots.on {
+  opacity: 1
+}
+
+#dots span {
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: .1em;
+  color: #555;
+  width: 34px;
+  text-align: center
+}
+
+#dots span.cur {
+  color: #fff
+}
+
+/* ---------- larm och länkbortfall ---------- */
+#Alarm {
+  position: absolute;
+  inset: 0;
+  border: 14px solid var(--red);
+  background: rgba(0, 0, 0, .85);
+  display: none;
+  z-index: 30;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-size: 120px;
+  font-weight: 800;
+  line-height: .95;
+  color: var(--red);
+  pointer-events: none
+}
+
+#Alarm.on {
+  display: flex
+}
+
+#stale {
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 43, 43, .93);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  font-size: 64px;
+  font-weight: 800;
+  letter-spacing: .1em;
+  z-index: 31
+}
+
+#stale.on {
+  display: flex
+}
+
+@media (prefers-reduced-motion:reduce) {
+  * {
+    transition: none !important
+  }
+}
