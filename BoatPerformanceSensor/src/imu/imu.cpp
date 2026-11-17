@@ -1,17 +1,14 @@
 #include "Arduino.h"
 #include "imu.h"
+#include <wire.h>
 
-#define BNO_CS 10
-#define BNO_INT 9
-#define BNO_RESET -1
+#define IMU_SDA 13
+#define IMU_SCL 14
+#define BNO_CS 12
+#define BNO_INT 11
+#define BNO_RESET 9
 
-struct euler_t
-{
-    float yaw;
-    float pitch;
-    float roll;
-} ypr;
-
+euler_t ypr;  
 float accelX, accelY, accelZ;
 
 Adafruit_BNO08x imu(BNO_RESET);
@@ -19,6 +16,8 @@ sh2_SensorValue_t sensorValue;
 
 sh2_SensorId_t reportType = SH2_ARVR_STABILIZED_RV;
 long reportIntervalUs = 20000;
+
+bool imuReady = false;
 
 void setReports()
 {
@@ -33,22 +32,19 @@ void setReports()
     }
 }
 
-void imuInit()
+void initIMU()
 {
-    if (!imu.begin_I2C())
+    Wire.begin(IMU_SDA, IMU_SCL);
+
+    if (!imu.begin_I2C(0x4B, &Wire))
     {
-        Serial.println("Failed to find BNO05 chip");
-        while (1)
-        {
-            delay(10);
-        }
+        Serial.println("VARNING: BNO085 hittades inte, fortsätter utan IMU");
+        imuReady = false;
+        return;
     }
+    imuReady = true;
     Serial.println("BNO085 Found!");
-
     setReports();
-
-    Serial.println("Reading events");
-    delay(100);
 }
 
 void quaternionToEuler(float qr, float qi, float qj, float qk, euler_t *ypr, bool degrees = false)
@@ -71,6 +67,15 @@ void quaternionToEuler(float qr, float qi, float qj, float qk, euler_t *ypr, boo
 
 void imuUpdate()
 {
+    if (!imuReady) {
+        static unsigned long lastRetry = 0;
+        if (millis() - lastRetry > 5000) {   // försök igen var 5:e sekund
+            lastRetry = millis();
+            initIMU();                         // tyst återanslutningsförsök
+        }
+        return;                                // oavsett: gör inget mer denna gång
+    }
+
     if (imu.wasReset())
     {
         setReports(); // Aktivera rapport om chipet återställts

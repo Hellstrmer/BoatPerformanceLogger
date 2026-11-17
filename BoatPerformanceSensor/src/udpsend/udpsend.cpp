@@ -45,13 +45,20 @@ static void CheckConnection()
         }        
 }
 
-void sendSensorDataUDP(float lift, float trim, float rpm, int overheat, int oilLow, float kn, float waterPressure, float fuel, float roll, float pitch, uint32_t satellites, double lat, double lng)
+// Skickar null i stället för NaN, så visar dashen ett streck
+static void putNum(const char* key, float v)
+{
+    if (isnan(v)) doc[key] = nullptr;
+    else          doc[key] = v;
+}
+
+void sendSensorDataUDP(float lift, float trim, float rpm, int overheat, int oilLow, float kn, float waterPressure, float fuel, float roll, float pitch, uint32_t satellites, double lat, double lng, float batteryVoltage, float tankLevel)
 {
     CheckConnection();
     // Convert to JSON
     doc["ms"] = millis();
     doc["lift"] = lift;
-    doc["trim"] = trim;
+    putNum("trim", trim);
     doc["rpm"] = rpm;
     doc["overheat"] = overheat;
     doc["oilLow"] = oilLow;
@@ -63,9 +70,11 @@ void sendSensorDataUDP(float lift, float trim, float rpm, int overheat, int oilL
     doc["satellites"] = satellites;
     doc["lat"] = lat;
     doc["lng"] = lng;
+    putNum("battery", batteryVoltage);
+    putNum("tank_level", tankLevel);
     
 
-    char buf[256];
+    char buf[512];
     size_t n = serializeJson(doc, buf);
 
 
@@ -74,4 +83,6 @@ void sendSensorDataUDP(float lift, float trim, float rpm, int overheat, int oilL
     udp.endPacket();
 
 }
+
+
 

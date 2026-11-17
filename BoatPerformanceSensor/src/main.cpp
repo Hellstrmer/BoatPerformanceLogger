@@ -1,74 +1,104 @@
 #include <Arduino.h>
 
 #include "encoder/encoder.h"
-//#include "espnow/espnow.h"
+// #include "espnow/espnow.h"
 #include "prefs/prefs.h"
-//#include "rpm/rpm.h"
-//#include "alarm/alarm.h"
+// #include "rpm/rpm.h"
+// #include "alarm/alarm.h"
 #include "udpsend/udpsend.h"
 #include "gps/gps.h"
+#include "imu/imu.h"
+#include "analog/analog.h"
 
-unsigned long sendInterval = 50; //20HZ
+unsigned long sendInterval = 50;      // 20HZ
 unsigned long meassureInterval = 100; // 10HZ
 
 // DEMO
 float RPMDEMO = 2100.0;
 float kn = 0.0;
 
-
 void setup()
 {
-  Serial.begin(115200);
-  initPrefs();
-  //initEncoder();
-  //initESPNow();
-  delay(500);
-  //initUDP();
-  //initRPM();
-  //initAlarms();
-  initGPS();
-  Serial.println("Started!");
-  delay(1000);
+    Serial.begin(115200);
+    Serial.setTxTimeoutMs(0); // låt inte Serial.print blockera utan USB
+    unsigned long t0 = millis();
+    while (!Serial && millis() - t0 < 2000)
+    {
+    }
+    // delay(1000);
+    // Serial.println("Starting...");
+    initPrefs();
+    // initEncoder();
+    delay(500);
+    initUDP();
+    // initRPM();
+    // initAlarms();
+    initGPS();
+    initIMU();
+    analogInit();
+    Serial.println("Started!");
+    delay(100);
 }
 // *********************** DEMO ********************************
-void sendDemoData() {
+void sendDemoData()
+{
     // Faser: ramp upp → håll fullt → ramp ner → håll tomgång → repeat
     static unsigned long phaseStart = 0;
-    static int phase = 0;           // 0=upp, 1=full, 2=ner, 3=tomgång
-    static float t = 0.0;           // 0..1, position i turen
+    static int phase = 0; // 0=upp, 1=full, 2=ner, 3=tomgång
+    static float t = 0.0; // 0..1, position i turen
 
-    const unsigned long RAMP_UP   = 8000;   // ms att gasa upp
-    const unsigned long HOLD_FULL = 5000;   // ms på full gas
-    const unsigned long RAMP_DOWN = 6000;   // ms att varva ner
-    const unsigned long HOLD_IDLE = 3000;   // ms på tomgång
+    const unsigned long RAMP_UP = 8000;   // ms att gasa upp
+    const unsigned long HOLD_FULL = 5000; // ms på full gas
+    const unsigned long RAMP_DOWN = 6000; // ms att varva ner
+    const unsigned long HOLD_IDLE = 3000; // ms på tomgång
 
     unsigned long now = millis();
     unsigned long elapsed = now - phaseStart;
 
-    switch (phase) {
-        case 0:  // ramp upp
-            t = (float)elapsed / RAMP_UP;
-            if (t >= 1.0) { t = 1.0; phase = 1; phaseStart = now; }
-            break;
-        case 1:  // håll fullt
+    switch (phase)
+    {
+    case 0: // ramp upp
+        t = (float)elapsed / RAMP_UP;
+        if (t >= 1.0)
+        {
             t = 1.0;
-            if (elapsed > HOLD_FULL) { phase = 2; phaseStart = now; }
-            break;
-        case 2:  // ramp ner
-            t = 1.0 - (float)elapsed / RAMP_DOWN;
-            if (t <= 0.0) { t = 0.0; phase = 3; phaseStart = now; }
-            break;
-        case 3:  // håll tomgång
+            phase = 1;
+            phaseStart = now;
+        }
+        break;
+    case 1: // håll fullt
+        t = 1.0;
+        if (elapsed > HOLD_FULL)
+        {
+            phase = 2;
+            phaseStart = now;
+        }
+        break;
+    case 2: // ramp ner
+        t = 1.0 - (float)elapsed / RAMP_DOWN;
+        if (t <= 0.0)
+        {
             t = 0.0;
-            if (elapsed > HOLD_IDLE) { phase = 0; phaseStart = now; }
-            break;
+            phase = 3;
+            phaseStart = now;
+        }
+        break;
+    case 3: // håll tomgång
+        t = 0.0;
+        if (elapsed > HOLD_IDLE)
+        {
+            phase = 0;
+            phaseStart = now;
+        }
+        break;
     }
 
     // ---- härled alla värden från t (0=tomgång, 1=full fart) ----
     float RPMDEMO = 2000.0 + t * 4130.0 + random(-30, 30);
 
     float kn = (RPMDEMO / 100.0 - 2.0) * 0.92 + random(-5, 5) / 10.0;
-    if (kn < 0) kn = 0;
+    if (kn < 0)
+        kn = 0;
 
     float lift = 154.0 - t * 9.0 + random(-3, 3) / 10.0;
     float trim = t * 10.2 + random(-2, 2) / 10.0;
@@ -80,39 +110,42 @@ void sendDemoData() {
     static float rollPhase = 0.0;
     rollPhase += 0.03;
     float roll = sin(rollPhase) * 25.0 + random(-10, 10) / 10.0;
-    
+
     // Pithc. nosen upp när farten stiger (följer t), lite brus
     float pitch = t * 9.0 + random(-8, 8) / 10.0;
     bool overheat;
     bool oilLow;
-    gpsUpdate();
-    uint32_t gpsSatellies = getGPSsatellites();
-    sendSensorDataUDP(lift, trim, RPMDEMO, overheat, oilLow, kn, waterPreassure, fuel, roll, pitch, gpsLat, gpsLng, gpsSatellies);
+    // gpsSatellies;
+    sendSensorDataUDP(lift, trim, RPMDEMO, overheat, oilLow, kn, waterPreassure, fuel, roll, pitch, gpsSatellites, gpsLat, gpsLng, 0.0, g_tank);
 }
 
 void loop()
-{  
-  static unsigned long lastSendInterval = 0;
-  static unsigned long lastReadInterval = 0;
-  static unsigned long lastSave = 0;
+{
+    static unsigned long lastSendInterval = 0;
+    static unsigned long lastReadInterval = 0;
+    static unsigned long lastSave = 0;
+    gpsUpdate();
+    imuUpdate();
+    analogUpdate();
 
-  
- if (millis() - lastReadInterval > meassureInterval) {
-    //RPM = readRPM();
-    //readAlarms();
-    lastReadInterval = millis();
-}
+    if (millis() - lastReadInterval > meassureInterval)
+    {
+        // RPM = readRPM();
+        // readAlarms();
+        lastReadInterval = millis();
+    }
 
- if (millis() - lastSendInterval > sendInterval) {
-    // float lift = encoderGetPositionMM();
-    // sendSensorDataUDP(lift, trim, RPMDEMO, overheat, oilLow, kn, waterPreassure, fuel);    
-    //sendDemoData();
+    if (millis() - lastSendInterval > sendInterval)
+    {
+        // float lift = encoderGetPositionMM();
+        sendSensorDataUDP(50.0, g_trim, 5000.0, 0, 0, gpsKn, g_waterPressureBar, 0, ypr.roll, ypr.pitch, gpsSatellites, gpsLat, gpsLng, g_battV, g_tank);
+        // sendDemoData();
 
-    checkLocation();
-
-    lastSendInterval = millis();
-}
-  // Save all values to internal memory
-  // Enables memory for powerloss
-  saveToPrefs(lastSave);
+        // Serial.printf("Yaw: %.1f, Pitch: %.1f, Roll: %.1f\n", ypr.yaw, ypr.pitch, ypr.roll);
+        lastSendInterval = millis();
+    }
+    checkAnalogValues();
+    // Save all values to internal memory
+    // Enables memory for powerloss
+    saveToPrefs(lastSave);
 }
