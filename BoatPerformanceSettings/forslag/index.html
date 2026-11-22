@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="sv">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Hydrolift T18 — Inställningar</title>
+    <link rel="stylesheet" href="/settings/forslag/settings.css">
+</head>
+
+<body>
+    <div class="header">
+        <img src="/settings/plutoid_engineering.png" class="logo" alt="Plutoid Engineering">
+        <span class="header-title">Hydrolift</span>
+    </div>
+
+    <nav class="tabs">
+        <button class="tab active" data-tab="dash">Visning</button>
+        <button class="tab" data-tab="esp"><span id="esp_tab_label">Givare</span> <span class="lock" id="lock_icon">&#128274;</span></button>
+    </nav>
+
+    <!-- ===================== FLIK: VISNING (dash) ===================== -->
+    <main class="panel" id="panel_dash">
+        <div class="section_top">
+            <div class="section-title_top">Visning på dashen</div>
+
+            <div class="section">
+                <div class="section-title">Propeller</div>
+                <div class="field">
+                    <div class="field-label"><div class="swatch"></div>Utväxling</div>
+                    <div class="input-with-unit">
+                        <input class="field-input" type="number" id="prop_gear" data-cfg="dash" min="0" max="10" step="0.01" inputmode="decimal">
+                        <span class="unit">:1</span>
+                    </div>
+                </div>
+                <div class="field">
+                    <div class="field-label"><div class="swatch"></div>Stigning</div>
+                    <div class="input-with-unit">
+                        <input class="field-input" type="number" id="prop_pitch" data-cfg="dash" min="0" max="50" step="0.1" inputmode="decimal">
+                        <span class="unit">tum</span>
+                    </div>
+                </div>
+                <div class="field">
+                    <div class="field-label"><div class="swatch_lower"></div>Slip, varning</div>
+                    <div class="input-with-unit">
+                        <input class="field-input" type="number" id="slip_warn" data-cfg="dash" min="0" max="100" step="0.1" inputmode="decimal">
+                        <span class="unit">%</span>
+                    </div>
+                </div>
+                <div class="field">
+                    <div class="field-label"><div class="swatch_upper"></div>Slip, larm</div>
+                    <div class="input-with-unit">
+                        <input class="field-input" type="number" id="slip_bad" data-cfg="dash" min="0" max="100" step="0.1" inputmode="decimal">
+                        <span class="unit">%</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-title">Motor</div>
+                <div class="field">
+                    <div class="field-label"><div class="swatch_upper"></div>Varvstopp</div>
+                    <div class="input-with-unit">
+                        <input class="field-input" type="number" id="redline" data-cfg="dash" min="0" max="10000" step="1" inputmode="numeric">
+                        <span class="unit">rpm</span>
+                    </div>
+                </div>
+                <div class="field">
+                    <div class="field-label"><div class="swatch"></div>Skalans max</div>
+                    <div class="input-with-unit">
+                        <input class="field-input" type="number" id="rpm_max" data-cfg="dash" min="0" max="10000" step="1" inputmode="numeric">
+                        <span class="unit">rpm</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-title">Lyft</div>
+                <div class="field">
+                    <div class="field-label"><div class="swatch_lower"></div>Undre gräns</div>
+                    <div class="input-with-unit">
+                        <input class="field-input" type="number" id="lift_min" data-cfg="dash" min="0" max="200" step="0.1" inputmode="decimal">
+                        <span class="unit">mm</span>
+                    </div>
+                </div>
+                <div class="field">
+                    <div class="field-label"><div class="swatch_upper"></div>Övre gräns</div>
+                    <div class="input-with-unit">
+                        <input class="field-input" type="number" id="lift_max" data-cfg="dash" min="0" max="200" step="0.1" inputmode="decimal">
+                        <span class="unit">mm</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-title">Trim</div>
+                <div class="field">
+                    <div class="field-label"><div class="swatch_lower"></div>Undre gräns</div>
+                    <div class="input-with-unit">
+                        <input class="field-input" type="number" id="trim_min" data-cfg="dash" min="0" max="200" step="0.1" inputmode="decimal">
+                        <span class="unit">%</span>
+                    </div>
+                </div>
+                <div class="field">
+                    <div class="field-label"><div class="swatch_upper"></div>Övre gräns</div>
+                    <div class="input-with-unit">
+                        <input class="field-input" type="number" id="trim_max" data-cfg="dash" min="0" max="200" step="0.1" inputmode="decimal">
+                        <span class="unit">%</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-title">Vattentryck</div>
+                <div class="field">
+                    <div class="field-label"><div class="swatch_lower"></div>Undre gräns</div>
+                    <div class="input-with-unit">
+                        <input class="field-input" type="number" id="water_min" data-cfg="dash" min="0" max="1000" step="0.1" inputmode="decimal">
+                        <span class="unit">bar</span>
+                    </div>
+                </div>
+                <div class="field">
+                    <div class="field-label"><div class="swatch_upper"></div>Övre gräns</div>
+                    <div class="input-with-unit">
+                        <input class="field-input" type="number" id="water_max" data-cfg="dash" min="0" max="1000" step="0.1" inputmode="decimal">
+                        <span class="unit">bar</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-title">Bränsleflöde</div>
+                <div class="field">
+                    <div class="field-label"><div class="swatch_lower"></div>Undre gräns</div>
+                    <div class="input-with-unit">
+                        <input class="field-input" type="number" id="fuel_min" data-cfg="dash" min="0" max="10000" step="0.1" inputmode="decimal">
+                        <span class="unit">l/h</span>
+                    </div>
+                </div>
+                <div class="field">
+                    <div class="field-label"><div class="swatch_upper"></div>Övre gräns</div>
+                    <div class="input-with-unit">
+                        <input class="field-input" type="number" id="fuel_max" data-cfg="dash" min="0" max="10000" step="0.1" inputmode="decimal">
+                        <span class="unit">l/h</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button class="btn" id="save_dash">Spara visning</button>
+    </main>
+
+    <!-- ===================== FLIK: GIVARE (ESP) ===================== -->
+    <main class="panel hidden" id="panel_esp">
+
+        <!-- Låst läge -->
+        <div class="section_top" id="esp_locked">
+            <div class="section-title_top">Givarkalibrering</div>
+            <p class="note">Här ställs ESP:ns kalibrering in. Felaktiga värden ger fel visning för trim, tank och vattentryck.</p>
+            <div class="field">
+                <div class="field-label"><div class="swatch"></div>PIN-kod</div>
+                <div class="input-with-unit">
+                    <input class="field-input" type="password" id="esp_pin" inputmode="numeric" autocomplete="off">
+                </div>
+            </div>
+            <button class="btn" id="unlock_esp">Lås upp</button>
+        </div>
+
+        <!-- Upplåst läge -->
+        <div id="esp_unlocked" class="hidden">
+            <div class="sync" id="esp_sync"><span class="dot"></span><span id="esp_sync_text">Hämtar status…</span></div>
+
+            <div class="section_top">
+                <div class="section-title_top">Givarkalibrering</div>
+
+                <div class="section">
+                    <div class="section-title">Trim <span class="live">kvot nu: <b data-live="trim_ratio" data-dec="3">—</b></span></div>
+                    <div class="field">
+                        <div class="field-label"><div class="swatch_lower"></div>Kvot helt nere</div>
+                        <div class="input-row">
+                            <div class="input-with-unit"><input class="field-input" type="number" id="trim_ratio_a" data-cfg="esp" min="0" max="1" step="0.001" inputmode="decimal"></div>
+                            <button class="btn_learn" data-learn="trim_ratio" data-target="trim_ratio_a">Läs in</button>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <div class="field-label"><div class="swatch_upper"></div>Kvot helt uppe</div>
+                        <div class="input-row">
+                            <div class="input-with-unit"><input class="field-input" type="number" id="trim_ratio_b" data-cfg="esp" min="0" max="1" step="0.001" inputmode="decimal"></div>
+                            <button class="btn_learn" data-learn="trim_ratio" data-target="trim_ratio_b">Läs in</button>
+                        </div>
+                    </div>
+                    <div class="field-pair">
+                        <div class="field">
+                            <div class="field-label">Visas nere</div>
+                            <div class="input-with-unit"><input class="field-input" type="number" id="trim_val_a" data-cfg="esp" min="-100" max="200" step="0.1" inputmode="decimal"><span class="unit">%</span></div>
+                        </div>
+                        <div class="field">
+                            <div class="field-label">Visas uppe</div>
+                            <div class="input-with-unit"><input class="field-input" type="number" id="trim_val_b" data-cfg="esp" min="-100" max="200" step="0.1" inputmode="decimal"><span class="unit">%</span></div>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <div class="field-label">Utjämning (1 = ingen)</div>
+                        <div class="input-with-unit"><input class="field-input" type="number" id="trim_alpha" data-cfg="esp" min="0.001" max="1" step="0.01" inputmode="decimal"></div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">Tank <span class="live">kvot nu: <b data-live="tank_ratio" data-dec="3">—</b></span></div>
+                    <div class="field">
+                        <div class="field-label"><div class="swatch_lower"></div>Kvot tom tank</div>
+                        <div class="input-row">
+                            <div class="input-with-unit"><input class="field-input" type="number" id="tank_ratio_a" data-cfg="esp" min="0" max="1" step="0.001" inputmode="decimal"></div>
+                            <button class="btn_learn" data-learn="tank_ratio" data-target="tank_ratio_a">Läs in</button>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <div class="field-label"><div class="swatch_upper"></div>Kvot full tank</div>
+                        <div class="input-row">
+                            <div class="input-with-unit"><input class="field-input" type="number" id="tank_ratio_b" data-cfg="esp" min="0" max="1" step="0.001" inputmode="decimal"></div>
+                            <button class="btn_learn" data-learn="tank_ratio" data-target="tank_ratio_b">Läs in</button>
+                        </div>
+                    </div>
+                    <div class="field-pair">
+                        <div class="field">
+                            <div class="field-label">Visas tom</div>
+                            <div class="input-with-unit"><input class="field-input" type="number" id="tank_val_a" data-cfg="esp" min="0" max="200" step="0.1" inputmode="decimal"><span class="unit">%</span></div>
+                        </div>
+                        <div class="field">
+                            <div class="field-label">Visas full</div>
+                            <div class="input-with-unit"><input class="field-input" type="number" id="tank_val_b" data-cfg="esp" min="0" max="200" step="0.1" inputmode="decimal"><span class="unit">%</span></div>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <div class="field-label">Utjämning (1 = ingen)</div>
+                        <div class="input-with-unit"><input class="field-input" type="number" id="tank_alpha" data-cfg="esp" min="0.001" max="1" step="0.001" inputmode="decimal"></div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">Vattentryck <span class="live">givare nu: <b data-live="wp_v" data-dec="2">—</b> V</span></div>
+                    <div class="field">
+                        <div class="field-label"><div class="swatch_lower"></div>Nollpunkt (motor av)</div>
+                        <div class="input-row">
+                            <div class="input-with-unit"><input class="field-input" type="number" id="wp_zero_v" data-cfg="esp" min="0.3" max="1.0" step="0.01" inputmode="decimal"><span class="unit">V</span></div>
+                            <button class="btn_learn" data-learn="wp_v" data-target="wp_zero_v">Läs in</button>
+                        </div>
+                    </div>
+                    <div class="field-pair">
+                        <div class="field">
+                            <div class="field-label">Givarens fullskala</div>
+                            <div class="input-with-unit"><input class="field-input" type="number" id="wp_fs" data-cfg="esp" min="1" max="300" step="1" inputmode="numeric"><span class="unit">psi</span></div>
+                        </div>
+                        <div class="field">
+                            <div class="field-label">Utjämning</div>
+                            <div class="input-with-unit"><input class="field-input" type="number" id="wp_alpha" data-cfg="esp" min="0.001" max="1" step="0.01" inputmode="decimal"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">Varvtal <span class="live">nu: <b data-live="rpm" data-dec="0">—</b> rpm</span></div>
+                    <div class="field">
+                        <div class="field-label"><div class="swatch"></div>Pulser per varv</div>
+                        <div class="input-with-unit"><input class="field-input" type="number" id="pulses_per_rev" data-cfg="esp" min="1" max="100" step="1" inputmode="numeric"></div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">Lyft <span class="live">nu: <b data-live="lift" data-dec="1">—</b> mm</span></div>
+                    <button class="btn_setting" id="reset_lift">Nollställ position</button>
+                </div>
+            </div>
+
+            <button class="btn" id="save_esp">Skicka till ESP</button>
+            <button class="btn_ghost" id="lock_esp">Lås</button>
+        </div>
+    </main>
+
+    <div class="toast" id="toast">Sparat</div>
+    <script src="/settings/forslag/settings.js"></script>
+</body>
+
+</html>
