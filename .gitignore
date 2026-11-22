@@ -30,4 +30,4 @@ Thumbs.db
 
 .env
 secrets.*
-*.token
+*.tokenBoatPerformanceSettings/config.json
