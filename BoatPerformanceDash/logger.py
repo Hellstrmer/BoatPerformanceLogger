@@ -4,6 +4,7 @@ import json
 import time
 import os
 import glob
+import math
 
 from datetime import datetime
 from flask import Flask, jsonify, send_from_directory, request
@@ -52,7 +53,8 @@ def udp_listener():
 
             # Calculate the slip angle of prop
             config_values = load_config()
-            latest["slip"] = calculate_slip(latest["rpm"], latest["kn"],config_values["prop_pitch"], config_values["prop_gear"])
+            latest["slip"] = calculate_slip(latest.get("rpm") or 0, latest.get("kn") or 0,
+                                            config_values["prop_pitch"], config_values["prop_gear"])
             #Open new logfile if None is open
             if logfile is None:                
                 name = datetime.now().strftime("trip_%Y-%m-%d_%H%M%S.influx")
@@ -66,6 +68,9 @@ def udp_listener():
             pass # Do nothing for the first time
         except json.JSONDecodeError:
             continue # Broken package, skip
+        except (KeyError, TypeError, ValueError) as e:
+            print(f"Dåligt paket: {e}")
+            continue
 
         # Save data to log on interval
         if logfile and time.time() - last_flush > 1.0:
@@ -93,23 +98,24 @@ def udp_listener():
             print("Session Finished")
 
 def build_line(d):
-    ts = time.time_ns()
-    return (f"boat "
-            f"rpm={float(d.get('rpm',0))},"
-            f"lift={float(d.get('lift',0))},"
-            f"trim={float(d.get('trim',0))},"
-            f"kn={float(d.get('kn',0))},"
-            f"waterpressure={float(d.get('waterpressure',0))},"
-            f"fuel={float(d.get('fuel',0))},"
-            f"slip={float(d.get('slip',0))},"
-            f"roll={float(d.get('roll',0))},"
-            f"pitch={float(d.get('pitch',0))},"
-            f"satellites={int(d.get('satellites',0))}i,"
-            f"lat={float(d.get('lat',0))},"
-            f"lng={float(d.get('lng',0))},"
-            f"overheat={int(d.get('overheat',0))}i,"
-            f"oilLow={int(d.get('oilLow',0))}i "
-            f"{ts}")
+    floats = {  # fältnamn i Influx: nyckel från ESP
+        "rpm": "rpm", "lift": "lift", "trim": "trim", "kn": "kn",
+        "waterpressure": "waterpressure", "fuel": "fuel", "slip": "slip",
+        "roll": "roll", "pitch": "pitch", "lat": "lat", "lng": "lng",
+        "batteryvoltage": "battery",
+    }
+    ints = {"satellites": "satellites", "overheat": "overheat", "oilLow": "oilLow"}
+
+    parts = []
+    for name, key in floats.items():
+        v = d.get(key)
+        if isinstance(v, (int, float)) and math.isfinite(v):
+            parts.append(f"{name}={float(v)}")
+    for name, key in ints.items():
+        v = d.get(key)
+        if isinstance(v, (int, float)) and math.isfinite(v):
+            parts.append(f"{name}={int(v)}i")
+    return f"boat {','.join(parts)} {time.time_ns()}"
 
 def calculate_slip(rpm, kn, pitch, gear):
     if rpm < 400:

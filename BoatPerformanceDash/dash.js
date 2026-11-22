@@ -30,6 +30,8 @@ const DEFAULTS = {
   batt_high: 15.0,       // V
   tank_warn: 20,         // %
   tank_low: 10,          // %
+  waterTemp_Low: 60,     // Celcius
+  waterTemp_High: 97,    // Celcius
 };
 
 let cfg = {};
@@ -55,6 +57,7 @@ function range(k) {
     case 'water': return [0, cfg.water_max];
     case 'batt': return [cfg.batt_scale_min, cfg.batt_scale_max];
     case 'tank': return [0, 100];
+    case 'waterTemp': return [cfg.waterTemp_Low, cfg.waterTemp_High];
   }
   return [0, 100];
 }
@@ -75,7 +78,7 @@ function fmt(k, dec) {
   if (k === 'sats') return String(last.satellites || 0);
   const v = s[k];
   if (v == null) return '–';
-  const d = dec != null ? dec : ({ kn: 1, slip: 1, trim: 1, water: 1, batt: 1 }[k] ?? 0);
+  const d = dec != null ? dec : ({ kn: 1, slip: 1, trim: 1, water: 1, batt: 1, waterTemp: 1 }[k] ?? 0);
   if (k === 'rpm') return (Math.round(v / 10) * 10).toLocaleString('sv-SE');
   if (k === 'lift' || k === 'fuel' || k === 'tank' || k === 'roll' || k === 'pitch') return String(Math.round(v));
   return v.toFixed(d);
@@ -312,13 +315,13 @@ async function init() {
   //$('dots').classList.remove('on');
   $('dots').classList.remove('on');
 
-  if (AUTO_ROTATE.length) {
-    showPage(PAGES.indexOf(AUTO_ROTATE[0]), false);
-    setInterval(() => {
-      const i = AUTO_ROTATE.indexOf(PAGES[page]);
-      showPage(PAGES.indexOf(AUTO_ROTATE[(i + 1) % AUTO_ROTATE.length]));
-    }, ROTATE_MS);
-  }
+  // if (AUTO_ROTATE.length) {
+  //   showPage(PAGES.indexOf(AUTO_ROTATE[0]), false);
+  //   setInterval(() => {
+  //     const i = AUTO_ROTATE.indexOf(PAGES[page]);
+  //     showPage(PAGES.indexOf(AUTO_ROTATE[(i + 1) % AUTO_ROTATE.length]));
+  //   }, ROTATE_MS);
+  // }
 
   initSwipe();
   addEventListener('resize', fit);
