@@ -1,8 +1,10 @@
 {
   "prop_gear": 2,
   "prop_pitch": 25,
+  "slip_warn": 12,
+  "slip_bad": 18,
   "redline": 5500,
-  "rpm_max": 6200,
+  "rpm_max": 6300,
   "lift_min": 0,
   "lift_max": 154.2,
   "trim_min": 0,

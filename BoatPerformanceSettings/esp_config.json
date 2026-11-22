@@ -1,0 +1,17 @@
+{
+  "trim_ratio_a": 0.05,
+  "trim_ratio_b": 0.45,
+  "trim_val_a": 0,
+  "trim_val_b": 100,
+  "trim_alpha": 0.2,
+  "tank_ratio_a": 0.05,
+  "tank_ratio_b": 0.45,
+  "tank_val_a": 0,
+  "tank_val_b": 100,
+  "tank_alpha": 0.01,
+  "wp_zero_v": 0.5,
+  "wp_fs": 30,
+  "wp_alpha": 0.3,
+  "pulses_per_rev": 12,
+  "ver": 1795366405
+}

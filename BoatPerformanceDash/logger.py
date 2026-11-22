@@ -5,10 +5,11 @@ import time
 import os
 import glob
 import math
+import hmac
 
 from datetime import datetime
 from flask import Flask, jsonify, send_from_directory, request
-from config import load_config, save_config
+from config import load_config, save_config, load_esp_config, save_esp_config, ESP_PIN
 
 
 # Delad data
@@ -32,11 +33,12 @@ def udp_listener():
     sock.settimeout(1.0)
     print(f"Lyssnar på UDP {UDP_PORT}...")
 
-    global latest
+    global latest, esp_cmd, last_rx
     logfile = None
     buffer = []
     last_flush = time.time()
     last_packet = time.time()
+    last_push = 0
 
     SESSION_TIMEOUT = 30 # Session finished when no data arrives for this time
 
@@ -50,6 +52,18 @@ def udp_listener():
             latest = d
             latest["pi_time"] = datetime.now().isoformat(timespec='milliseconds')
             last_packet = time.time()
+            last_rx = time.time()
+            try: 
+                esp = load_esp_config()
+                if d.get("cfg") != esp["ver"] and time.time() - last_push > 1.0:
+                    sock.sendto(json.dumps(esp).encode(), (addr[0], 5006))
+                    last_push = time.time()
+                if esp_cmd:
+                    sock.sendto(json.dumps({"cmd": esp_cmd}).encode(), (addr[0], 5006))
+                    esp_cmd = None
+            except OSError as e:
+                print(f"Kunde inte skicka till ESP: {e}")
+
 
             # Calculate the slip angle of prop
             config_values = load_config()
@@ -134,6 +148,13 @@ def recover_from_logs():
         os.replace(path, dest)
         print(f"Recovered file in logs folder: {name}")
 
+# ESP Data
+
+esp_cmd = None
+last_rx = 0
+
+def pin_ok() :
+    return ESP_PIN and hmac.compare_digest(request.headers.get("X-PIN", ""), ESP_PIN)
 
 
 # Configure Flask Webserver
@@ -171,6 +192,27 @@ def set_config():
         return jsonify({"status": "ok"})
     else: 
         return jsonify({"error": "ogiltiga parametrar"}), 400
+
+@app.route("/esp/config", methods=["GET", "POST"])
+def esp_config():
+    if not pin_ok():
+        return jsonify({"error": "ogiltig PIN"}), 401
+    if request.method == "GET":
+        return jsonify(load_esp_config())
+    ver = save_esp_config(request.get_json(force=True))
+    if ver is None:
+        return jsonify({"error": "ogiltiga parametrar"}), 400
+    return jsonify({"status": "ok", "ver": ver})
+
+@app.route("/esp/reset_lift", methods=["POST"])
+def esp_reset_lift():
+    global esp_cmd
+    if not pin_ok():
+        return jsonify({"error": "ogiltig PIN"}), 401
+    if time.time() - last_rx > 3:
+        return jsonify({"error": "ingen kontakt med ESP:n"}), 409
+    esp_cmd = "reset_lift"
+    return jsonify({"status": "ok"})
 
 
 # Start UDP And Flask on different Threads
